@@ -3,10 +3,11 @@
     <div class="floar">
       <div class="player">
         <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
+        {{ p_life }}
       </div>
       <div class="enemy">
-        <img class="object" ref="enemy" :src="enemyImage"
-             :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+        <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+        {{ e_life }}
       </div>
       <div class="action">
         <button @click="leftMove">左</button>
@@ -14,7 +15,7 @@
         <button @click="attackMove">攻撃</button>
       </div>
       <div class="lifeGage">
-        {{ life }}
+        プレイヤー：{{ p_life }} 　　　相手：{{ e_life }}
       </div>
     </div>
   </div>
@@ -33,7 +34,8 @@ export default {
       e_y: 0,//敵キャラの位置（縦）
       playerImage: '/static/img/sample_stand.b88e874.gif', //HACK：なぜ表示されるかよくわからない
       enemyImage: '/static/img/sample_stand.b88e874.gif', //HACK：なぜ表示されるかよくわからない
-      life: 10
+      p_life: 10,
+      e_life: 10
     }
   }, mounted() {
     this.enemyAutoAction();
@@ -55,7 +57,7 @@ export default {
       );
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
-        this.life_decrease();
+        this.e_life_decrease();
       setTimeout(() => {
           this.e_x = +550;
         }
@@ -63,8 +65,11 @@ export default {
       );
       }
     },
-    life_decrease() {
-      this.life = this.life - 1;
+    p_life_decrease() {
+      this.p_life = this.p_life - 1;
+    },
+    e_life_decrease() {
+      this.e_life = this.e_life - 1;
     },
     isConflict() {
       const enemyDom = this.$refs.enemy;
@@ -132,7 +137,7 @@ export default {
       );
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
-        this.life_decrease();
+        this.p_life_decrease();
       }
     }
   }
