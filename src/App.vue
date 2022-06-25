@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <test/>
+    <Battle/>
 <!--    <moving-box/>-->
 <!--    <router-view/>-->
   </div>
 </template>
 
 <script>
-import Test from "./components/Test"
+import Battle from "./components/Battle"
 // import movingBox from "./components/moving-box"
 
 export default {
   name: "App",
   components: {
-    Test
+    Battle
   }
 }
 </script>
