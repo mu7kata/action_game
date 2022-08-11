@@ -32,8 +32,8 @@ export default {
       p_y: 0,
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
-      playerImage: '/static/img/sample_stand.b88e874.gif', //HACK：なぜ表示されるかよくわからない
-      enemyImage: '/static/img/sample_stand.b88e874.gif', //HACK：なぜ表示されるかよくわからない
+      playerImage:require('@/assets/img/kaki_stand.gif'),
+      enemyImage:require('@/assets/img/sample_stand.gif'),
       p_life: 10,
       e_life: 10
     }
@@ -48,10 +48,10 @@ export default {
       this.p_x = this.p_x - 50
     },
     attackMove() {
-      this.playerImage = "/static/img/sample_attack.c10ccbd.gif";
+      this.playerImage =require('@/assets/img/kaki_attack.gif');
 
       setTimeout(() => {
-          this.playerImage = "/static/img/sample_stand.b88e874.gif"
+          this.playerImage =require('@/assets/img/kaki_stand.gif');
         }
         , 880
       );
@@ -122,11 +122,12 @@ export default {
       return num;
     },
     enemyAttackMove() {
-      this.enemyImage = "/static/img/sample_attack.c10ccbd.gif";
+      this.enemyImage = require('@/assets/img/sample_attack.gif');
+
 
 
       setTimeout(() => {
-          this.enemyImage = "/static/img/sample_stand.b88e874.gif";
+          this.enemyImage = require('@/assets/img/sample_stand.gif');
         }
         , 880
       );
