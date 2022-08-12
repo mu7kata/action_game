@@ -28,6 +28,7 @@
           <button @click="attackMove">攻撃</button>
         </div>
         <div class="lifeGage">
+          【体力】
           プレイヤー：{{ p_life }} 　　　相手：{{ e_life }}
         </div>
       </div>
@@ -47,7 +48,7 @@ export default {
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
       playerImage: require('@/assets/img/kaki_stand.gif'),
-      enemyImage: require('@/assets/img/sample_stand.gif'),
+      enemyImage: require('@/assets/img/enamy_1_stand.gif'),
       p_life: 10,
       e_life: 10,
       keyCode: null
@@ -152,11 +153,11 @@ export default {
       return num;
     },
     enemyAttackMove() {
-      this.enemyImage = require('@/assets/img/sample_attack.gif');
+      this.enemyImage = require('@/assets/img/enamy_1_attack.gif');
 
 
       setTimeout(() => {
-          this.enemyImage = require('@/assets/img/sample_stand.gif');
+          this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
         }
         , 880
       );
@@ -202,7 +203,7 @@ export default {
   width: 10px;
 }
 
-.object {
+.player>.object {
   width: 300px;
   height: 200px;
 }
@@ -233,5 +234,10 @@ export default {
   display: flex;
   /* 交差軸：上下の配置 */
   align-items: flex-end;
+}
+
+.enemy>.object {
+  width: 200px;
+  height: 200px;
 }
 </style>
