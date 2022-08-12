@@ -1,21 +1,35 @@
 <template>
   <div id="app">
-    <div class="floar">
-      <div class="player">
-        <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
-        {{ p_life }}
-      </div>
-      <div class="enemy">
-        <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
-        {{ e_life }}
-      </div>
-      <div class="action">
-        <button @click="leftMove">左</button>
-        <button @click="rightMove">右</button>
-        <button @click="attackMove">攻撃</button>
-      </div>
-      <div class="lifeGage">
-        プレイヤー：{{ p_life }} 　　　相手：{{ e_life }}
+    <div class="centeringParent">
+      <div class="floar">
+        <!--        <div class="battleField">-->
+        <!--        <div class="player">-->
+        <!--          <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">-->
+        <!--          {{ p_life }}-->
+        <!--        </div>-->
+        <!--        <div class="enemy">-->
+        <!--          <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">-->
+        <!--          {{ e_life }}-->
+        <!--        </div>-->
+        <!--        </div>-->
+        <div class="battleField">
+          <div class="player">
+            <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
+            {{ p_life }}
+          </div>
+          <div class="enemy">
+            <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+            {{ e_life }}
+          </div>
+        </div>
+        <div class="action">
+          <button @click="leftMove">左</button>
+          <button @click="rightMove">右</button>
+          <button @click="attackMove">攻撃</button>
+        </div>
+        <div class="lifeGage">
+          プレイヤー：{{ p_life }} 　　　相手：{{ e_life }}
+        </div>
       </div>
     </div>
   </div>
@@ -41,15 +55,26 @@ export default {
   }, mounted() {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
+    this.e_x = 850;
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
     rightMove() {
+      //移動制限
+      if (this.p_x == 950) {
+        return;
+      }
       this.p_x = this.p_x + 50
     },
     leftMove() {
+
+
+      //移動制限
+      if (this.p_x < 50) {
+        return;
+      }
       this.p_x = this.p_x - 50
     },
     attackMove() {
@@ -100,7 +125,6 @@ export default {
       if (this.isConflict()) {
         //攻撃をランダムに実行
         if ((this.e_x % 3) == 0 && this.e_x != 0) {
-
           this.enemyAttackMove();
         }
         setTimeout(() => {
@@ -115,9 +139,10 @@ export default {
       if (this.e_x < 0) {
         this.e_x = 10;
       }
-      if (this.e_x > 1000) {
-        this.e_x = 900;
+      if (this.e_x > 900) {
+        this.e_x = 850;
       }
+
     },
     getRandam(n, m) {
       let num = 0;
@@ -188,8 +213,25 @@ export default {
   right: 200px;
 }
 
+.centeringParent {
+  padding: 20px; /* 余白指定 */
+  background-color: #ddd; /* 背景色指定 */ /* 高さ指定 */
+}
+
 .floar {
-  width: 1000px;
-  margin: auto 0;
+  background-color: #03A9F4; /* 背景色指定 */
+  width: 1200px; /* 幅指定 */
+  height: 500px; /* 高さ指定 */
+  margin: 0 auto; /* 中央寄せ */
+}
+
+.battleField{
+  height: 100%;
+  width: 100%;
+
+  /* フレックスコンテナであることを指定 */
+  display: flex;
+  /* 交差軸：上下の配置 */
+  align-items: flex-end;
 }
 </style>
