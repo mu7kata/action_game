@@ -2,34 +2,28 @@
   <div id="app">
     <div class="centeringParent">
       <div class="floar">
-        <!--        <div class="battleField">-->
-        <!--        <div class="player">-->
-        <!--          <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">-->
-        <!--          {{ p_life }}-->
-        <!--        </div>-->
-        <!--        <div class="enemy">-->
-        <!--          <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">-->
-        <!--          {{ e_life }}-->
-        <!--        </div>-->
-        <!--        </div>-->
+        <div style="display: flex;justify-content: space-between;">
+          <div class="life-frame">
+            <div class="player-life-bar"></div>
+            <div class="life-mark"></div>
+          </div>
+          <div class="life-frame">
+            <div class="enemy-life-bar"></div>
+            <div class="life-mark"></div>
+          </div>
+        </div>
         <div class="battleField">
           <div class="player">
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
-            {{ p_life }}
           </div>
           <div class="enemy">
             <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
-            {{ e_life }}
           </div>
         </div>
         <div class="action">
           <button @click="leftMove">左</button>
           <button @click="rightMove">右</button>
           <button @click="attackMove">攻撃</button>
-        </div>
-        <div class="lifeGage">
-          【体力】
-          プレイヤー：{{ p_life }} 　　　相手：{{ e_life }}
         </div>
       </div>
     </div>
@@ -98,9 +92,15 @@ export default {
     },
     p_life_decrease() {
       this.p_life = this.p_life - 1;
+      //体力ゲージ消費処理
+      const lifeBar = document.getElementsByClassName('player-life-bar');
+      lifeBar[0].style.width = this.p_life * 10 + "%"
     },
     e_life_decrease() {
       this.e_life = this.e_life - 1;
+      //体力ゲージ消費処理
+      const lifeBar = document.getElementsByClassName('enemy-life-bar');
+      lifeBar[0].style.width = this.e_life * 10 + "%";
     },
     isConflict() {
       const enemyDom = this.$refs.enemy;
@@ -189,7 +189,7 @@ export default {
       }
 
 
-    }
+    },
   }
 }
 </script>
@@ -203,7 +203,7 @@ export default {
   width: 10px;
 }
 
-.player>.object {
+.player > .object {
   width: 300px;
   height: 200px;
 }
@@ -220,13 +220,13 @@ export default {
 }
 
 .floar {
-  background-color: #03A9F4; /* 背景色指定 */
+  /*background-color: #03A9F4; !* 背景色指定 *!*/
   width: 1200px; /* 幅指定 */
   height: 500px; /* 高さ指定 */
   margin: 0 auto; /* 中央寄せ */
 }
 
-.battleField{
+.battleField {
   height: 100%;
   width: 100%;
 
@@ -236,8 +236,28 @@ export default {
   align-items: flex-end;
 }
 
-.enemy>.object {
+.enemy > .object {
   width: 200px;
   height: 200px;
 }
+
+
+/**
+体力ゲージ
+ */
+.life-frame {
+  margin-top: 20px;
+  width: 30%;
+  background-color: rgba(10, 0, 50, 0.6);
+  display: flex;
+  padding: 3px 3px;
+}
+
+.player-life-bar, .enemy-life-bar {
+  height: 20px;
+  background-color: rgb(0, 255, 255);
+  transition: 300ms;
+  width: 100%;
+}
+
 </style>
