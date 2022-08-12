@@ -32,13 +32,18 @@ export default {
       p_y: 0,
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
-      playerImage:require('@/assets/img/kaki_stand.gif'),
-      enemyImage:require('@/assets/img/sample_stand.gif'),
+      playerImage: require('@/assets/img/kaki_stand.gif'),
+      enemyImage: require('@/assets/img/sample_stand.gif'),
       p_life: 10,
-      e_life: 10
+      e_life: 10,
+      keyCode: null
     }
   }, mounted() {
     this.enemyAutoAction();
+    document.addEventListener('keydown', this.onKeyDown);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
     rightMove() {
@@ -48,21 +53,21 @@ export default {
       this.p_x = this.p_x - 50
     },
     attackMove() {
-      this.playerImage =require('@/assets/img/kaki_attack.gif');
+      this.playerImage = require('@/assets/img/kaki_attack.gif');
 
       setTimeout(() => {
-          this.playerImage =require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require('@/assets/img/kaki_stand.gif');
         }
         , 880
       );
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
         this.e_life_decrease();
-      setTimeout(() => {
-          this.e_x = +550;
-        }
-        , 500
-      );
+        setTimeout(() => {
+            this.e_x = +550;
+          }
+          , 500
+        );
       }
     },
     p_life_decrease() {
@@ -98,11 +103,11 @@ export default {
 
           this.enemyAttackMove();
         }
-          setTimeout(() => {
-              this.e_x = this.e_x + x_num;
-            }
-            , 400
-          );
+        setTimeout(() => {
+            this.e_x = this.e_x + x_num;
+          }
+          , 400
+        );
 
       } else {
         this.e_x = this.e_x + x_num;
@@ -125,7 +130,6 @@ export default {
       this.enemyImage = require('@/assets/img/sample_attack.gif');
 
 
-
       setTimeout(() => {
           this.enemyImage = require('@/assets/img/sample_stand.gif');
         }
@@ -140,6 +144,25 @@ export default {
       if (this.isConflict()) {
         this.p_life_decrease();
       }
+    },
+    onKeyDown(event) {
+      this.keyCode = event.keyCode
+
+      const ArrowRight = 39;
+      const ArrowLeft = 37;
+      const enter = 13;//TODO:追加アクションで設定する
+      const space = 32;
+      if (this.keyCode == ArrowRight) {
+        this.rightMove();
+      }
+      if (this.keyCode == ArrowLeft) {
+        this.leftMove();
+      }
+      if (this.keyCode == space) {
+        this.attackMove();
+      }
+
+
     }
   }
 }
