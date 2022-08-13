@@ -66,8 +66,6 @@ export default {
       this.p_x = this.p_x + 50
     },
     leftMove() {
-
-
       //移動制限
       if (this.p_x < 50) {
         return;
@@ -103,15 +101,16 @@ export default {
       );
       document.addEventListener('keyup', this.onKeyUp);
       this.playerStatus = 'gard';
-      // //物体同士の正徳を検知したらダメージを減らす
-      // if (this.isConflict()) {
-      //   this.e_life_decrease();
-      //   setTimeout(() => {
-      //       this.e_x = +550;
-      //     }
-      //     , 500
-      //   );
-      // }
+    },
+    enemyDeadMove() {
+      this.enemyImage = require('@/assets/img/enamy_1_dead.gif');
+
+      setTimeout(() => {
+          this.enemyImage = require('@/assets/img/enamy_1_deading.gif');
+        }
+        , 250
+      );
+      this.enemyStatus = 'dead';
     },
     p_life_decrease() {
 
@@ -124,6 +123,9 @@ export default {
       lifeBar[0].style.width = this.p_life * 10 + "%"
     },
     e_life_decrease() {
+      if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
+        return;
+      }
       this.e_life = this.e_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
@@ -150,11 +152,12 @@ export default {
       );
     },
     enemyMove() {
-      if (this.enemyStatus == 'damage') {
+      if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
       //死亡アクション
       if (this.e_life <= 0) {
+        this.enemyDeadMove();
         return;
       }
       let x_num = this.getRandam(-100, 100);
