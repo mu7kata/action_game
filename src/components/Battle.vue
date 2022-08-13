@@ -46,7 +46,8 @@ export default {
       p_life: 10,
       e_life: 10,
       keyCode: null,
-      playerStatus: ''
+      playerStatus: '',
+      enemyStatus: ''
     }
   }, mounted() {
     this.enemyAutoAction();
@@ -127,6 +128,7 @@ export default {
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       lifeBar[0].style.width = this.e_life * 10 + "%";
+      this.enemyDamageMove();
     },
     isConflict() {
       const enemyDom = this.$refs.enemy;
@@ -148,7 +150,9 @@ export default {
       );
     },
     enemyMove() {
-
+      if (this.enemyStatus == 'damage') {
+        return;
+      }
       //死亡アクション
       if (this.e_life == 0) {
         return;
@@ -201,6 +205,16 @@ export default {
       if (this.isConflict()) {
         this.p_life_decrease();
       }
+    },
+    enemyDamageMove() {
+      this.enemyImage = require('@/assets/img/enamy_1_damege.gif');
+      this.enemyStatus = 'damage';
+      setTimeout(() => {
+          this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
+          this.enemyStatus = '';
+        }
+        , 880
+      );
     },
     onKeyDown(event) {
       this.keyCode = event.keyCode
