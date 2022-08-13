@@ -89,6 +89,23 @@ export default {
           , 500
         );
       }
+    }, gardMove() {
+      this.playerImage = require('@/assets/img/kaki_gard.gif');
+
+      setTimeout(() => {
+          this.playerImage = require('@/assets/img/kaki_stand.gif');
+        }
+        , 880
+      );
+      // //物体同士の正徳を検知したらダメージを減らす
+      // if (this.isConflict()) {
+      //   this.e_life_decrease();
+      //   setTimeout(() => {
+      //       this.e_x = +550;
+      //     }
+      //     , 500
+      //   );
+      // }
     },
     p_life_decrease() {
       this.p_life = this.p_life - 1;
@@ -122,6 +139,11 @@ export default {
       );
     },
     enemyMove() {
+
+      //死亡アクション
+      if (this.e_life == 0) {
+        return;
+      }
       let x_num = this.getRandam(-100, 100);
       if (this.isConflict()) {
         //攻撃をランダムに実行
@@ -176,6 +198,7 @@ export default {
 
       const ArrowRight = 39;
       const ArrowLeft = 37;
+      const ArrowDown = 40;
       const enter = 13;//TODO:追加アクションで設定する
       const space = 32;
       if (this.keyCode == ArrowRight) {
@@ -186,6 +209,9 @@ export default {
       }
       if (this.keyCode == space) {
         this.attackMove();
+      }
+      if (this.keyCode == ArrowDown) {
+        this.gardMove();
       }
 
 
