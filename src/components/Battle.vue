@@ -45,7 +45,8 @@ export default {
       enemyImage: require('@/assets/img/enamy_1_stand.gif'),
       p_life: 10,
       e_life: 10,
-      keyCode: null
+      keyCode: null,
+      playerStatus: ''
     }
   }, mounted() {
     this.enemyAutoAction();
@@ -89,14 +90,18 @@ export default {
           , 500
         );
       }
-    }, gardMove() {
+    },
+    gardMove() {
       this.playerImage = require('@/assets/img/kaki_gard.gif');
 
       setTimeout(() => {
           this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerStatus = '';
         }
-        , 880
+        , 3000
       );
+      document.addEventListener('keyup', this.onKeyUp);
+      this.playerStatus = 'gard';
       // //物体同士の正徳を検知したらダメージを減らす
       // if (this.isConflict()) {
       //   this.e_life_decrease();
@@ -108,6 +113,10 @@ export default {
       // }
     },
     p_life_decrease() {
+
+      if (this.playerStatus == 'gard') {
+        return;
+      }
       this.p_life = this.p_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('player-life-bar');
@@ -210,12 +219,14 @@ export default {
       if (this.keyCode == space) {
         this.attackMove();
       }
-      if (this.keyCode == ArrowDown) {
+      if (this.keyCode == ArrowDown && this.playerStatus != 'gard') {
         this.gardMove();
       }
-
-
     },
+    onKeyUp() {
+      this.playerImage = require('@/assets/img/kaki_stand.gif');
+      this.playerStatus = '';
+    }
   }
 }
 </script>
