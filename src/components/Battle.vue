@@ -91,14 +91,21 @@ export default {
       }
     },
     damageMove() {
+      console.log('damege');
       this.playerImage = require('@/assets/img/kaki_damage.gif');
       this.playerStatus = 'damage';
+      if (this.p_life <= 0) {
+        this.deadMove();
+        return;
+      }
+
       setTimeout(() => {
           this.playerImage = require('@/assets/img/kaki_stand.gif');
           this.playerStatus = '';
         }
         , 500
       );
+
     },
     gardMove() {
       this.playerImage = require('@/assets/img/kaki_gard.gif');
@@ -112,25 +119,21 @@ export default {
       document.addEventListener('keyup', this.onKeyUp);
       this.playerStatus = 'gard';
     },
-    enemyDeadMove() {
-      this.enemyImage = require('@/assets/img/enamy_1_dead.gif');
-
-      setTimeout(() => {
-          this.enemyImage = require('@/assets/img/enamy_1_deading.gif');
-        }
-        , 250
-      );
-      this.enemyStatus = 'dead';
+    deadMove() {
+      this.playerImage = require('@/assets/img/kaki_dead.gif');
+      this.playerStatus = 'dead';
     },
     p_life_decrease() {
-      if (this.playerStatus == 'gard'||this.playerStatus == 'damage' ) {
+      if (this.playerStatus == 'gard' || this.playerStatus == 'damage' || this.playerStatus == 'dead') {
         return;
       }
-      this.p_life = this.p_life - 1;
+
+      this.p_life = this.p_life - 5;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
       this.damageMove();
+
     },
     e_life_decrease() {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
@@ -152,6 +155,16 @@ export default {
         return true;
       }
       return false
+    },
+    enemyDeadMove() {
+      this.enemyImage = require('@/assets/img/enamy_1_dead.gif');
+
+      setTimeout(() => {
+          this.enemyImage = require('@/assets/img/enamy_1_deading.gif');
+        }
+        , 250
+      );
+      this.enemyStatus = 'dead';
     },
     enemyAutoAction() {
       this.enemyMove();
@@ -230,6 +243,10 @@ export default {
       );
     },
     onKeyDown(event) {
+
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
       this.keyCode = event.keyCode
 
       const ArrowRight = 39;
