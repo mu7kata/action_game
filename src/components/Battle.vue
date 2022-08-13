@@ -90,6 +90,16 @@ export default {
         );
       }
     },
+    damageMove() {
+      this.playerImage = require('@/assets/img/kaki_damage.gif');
+      this.playerStatus = 'damage';
+      setTimeout(() => {
+          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerStatus = '';
+        }
+        , 500
+      );
+    },
     gardMove() {
       this.playerImage = require('@/assets/img/kaki_gard.gif');
 
@@ -113,14 +123,14 @@ export default {
       this.enemyStatus = 'dead';
     },
     p_life_decrease() {
-
-      if (this.playerStatus == 'gard') {
+      if (this.playerStatus == 'gard'||this.playerStatus == 'damage' ) {
         return;
       }
       this.p_life = this.p_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
+      this.damageMove();
     },
     e_life_decrease() {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
