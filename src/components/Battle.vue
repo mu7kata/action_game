@@ -80,7 +80,7 @@ export default {
       setTimeout(() => {
           this.playerImage = require('@/assets/img/kaki_stand.gif');
         }
-        , 880
+        , 200
       );
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
@@ -136,7 +136,7 @@ export default {
       const playerDom = this.$refs.player;
       const playerRect = playerDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-      if ((enemyRect.right - playerRect.right) < 300) {
+      if ((enemyRect.right - playerRect.right) < 200) {
         return true;
       }
       return false
@@ -154,7 +154,7 @@ export default {
         return;
       }
       //死亡アクション
-      if (this.e_life == 0) {
+      if (this.e_life <= 0) {
         return;
       }
       let x_num = this.getRandam(-100, 100);
