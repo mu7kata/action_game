@@ -37,12 +37,12 @@ export default {
   components: {},
   data() {
     return {
-      player: this.$route.params.playerName,
+      player: '',
       p_x: 0,
       p_y: 0,
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
-      playerImage: require('@/assets/img/kaki_stand.gif'),
+      playerImage: '',
       enemyImage: require('@/assets/img/enamy_1_stand.gif'),
       p_life: 10,
       e_life: 10,
@@ -51,6 +51,8 @@ export default {
       enemyStatus: '',
     }
   }, mounted() {
+    this.player = this.$route.params.playerName;
+    this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
@@ -92,8 +94,7 @@ export default {
       }
     },
     damageMove() {
-      console.log('damege');
-      this.playerImage = require('@/assets/img/kaki_damage.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
       this.playerStatus = 'damage';
       if (this.p_life <= 0) {
         this.deadMove();
@@ -101,7 +102,7 @@ export default {
       }
 
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 500
@@ -109,10 +110,10 @@ export default {
 
     },
     gardMove() {
-      this.playerImage = require('@/assets/img/kaki_gard.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_gard.gif`);
 
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 3000
@@ -121,7 +122,7 @@ export default {
       this.playerStatus = 'gard';
     },
     deadMove() {
-      this.playerImage = require('@/assets/img/kaki_dead.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
       this.playerStatus = 'dead';
     },
     p_life_decrease() {
@@ -269,7 +270,7 @@ export default {
       }
     },
     onKeyUp() {
-      this.playerImage = require('@/assets/img/kaki_stand.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
     }
   }
