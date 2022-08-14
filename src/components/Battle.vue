@@ -76,10 +76,10 @@ export default {
       this.p_x = this.p_x - 50
     },
     attackMove() {
-      this.playerImage = require('@/assets/img/kaki_attack.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_attack.gif`);
 
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
         }
         , 200
       );
@@ -250,7 +250,9 @@ export default {
         return;
       }
       this.keyCode = event.keyCode
-
+      console.log(require(`@/assets/img/${this.player}_stand.gif`));
+      console.log(require(`@/assets/img/kaki_stand.gif`));
+      console.log(this.player);
       const ArrowRight = 39;
       const ArrowLeft = 37;
       const ArrowDown = 40;
@@ -270,6 +272,7 @@ export default {
       }
     },
     onKeyUp() {
+
       this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
     }
