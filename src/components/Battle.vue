@@ -37,6 +37,7 @@ export default {
   components: {},
   data() {
     return {
+      player: this.$route.params.playerName,
       p_x: 0,
       p_y: 0,
       e_x: 200,//敵キャラの位置（横）
@@ -47,7 +48,7 @@ export default {
       e_life: 10,
       keyCode: null,
       playerStatus: '',
-      enemyStatus: ''
+      enemyStatus: '',
     }
   }, mounted() {
     this.enemyAutoAction();
