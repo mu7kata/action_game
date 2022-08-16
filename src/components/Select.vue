@@ -4,6 +4,7 @@
     <input type="button" @click="player = 'kaki'" value="カッキー"/>
     <input type="button" @click="player = 'haru'" value="はるか"/>
     <input type="button" @click="player = 'eda'" value="枝松"/>
+    <input type="button" @click="player = 'kuni'" value="邦明"/>
     <router-link :to="`battle/${player}`">battle</router-link>
   </div>
 </template>
