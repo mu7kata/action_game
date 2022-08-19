@@ -66,6 +66,11 @@ export default {
       if (this.p_x == 950) {
         return;
       }
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.p_x = this.p_x - 10
+        return;
+      }
       this.p_x = this.p_x + 50
     },
     leftMove() {
@@ -201,12 +206,22 @@ export default {
       } else {
         this.e_x = this.e_x + x_num;
       }
+
+      //移動制限(画面に合わせて)
       if (this.e_x < 0) {
         this.e_x = 10;
       }
       if (this.e_x > 900) {
         this.e_x = 850;
       }
+
+      console.log(this.e_x - this.p_x)
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.p_x = this.p_x + 10
+        return;
+      }
+
 
     },
     getRandam(n, m) {
