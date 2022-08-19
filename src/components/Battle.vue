@@ -132,8 +132,14 @@ export default {
       this.playerStatus = 'dead';
     },
     p_life_decrease() {
-      if(this.playerStatus == 'gard'){
+      if (this.playerStatus == 'gard') {
         this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
+        setTimeout(() => {
+            this.p_x = this.p_x - 150;
+
+          }
+          , 300
+        );
         return;
       }
 
@@ -146,17 +152,29 @@ export default {
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
       this.damageMove();
-
+      setTimeout(() => {
+          this.p_x = this.p_x - 200;
+        }
+        , 300
+      );
     },
     e_life_decrease() {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
+
       this.e_life = this.e_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       lifeBar[0].style.width = this.e_life * 10 + "%";
       this.enemyDamageMove();
+
+      setTimeout(() => {
+          this.e_x = this.e_x + 200;
+          console.log(this.e_x)
+        }
+        , 500
+      );
     },
     isConflict() {
       const enemyDom = this.$refs.enemy;
@@ -238,17 +256,12 @@ export default {
     enemyAttackMove() {
       this.enemyImage = require('@/assets/img/enamy_1_attack.gif');
 
-
       setTimeout(() => {
           this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
         }
         , 880
       );
-      setTimeout(() => {
-          this.p_x = -50;
-        }
-        , 500
-      );
+
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
         this.p_life_decrease();
