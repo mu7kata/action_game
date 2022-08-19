@@ -132,11 +132,16 @@ export default {
       this.playerStatus = 'dead';
     },
     p_life_decrease() {
-      if (this.playerStatus == 'gard' || this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if(this.playerStatus == 'gard'){
+        this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
         return;
       }
 
-      this.p_life = this.p_life - 5;
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
+
+      this.p_life = this.p_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
@@ -215,7 +220,6 @@ export default {
         this.e_x = 850;
       }
 
-      console.log(this.e_x - this.p_x)
       //敵との距離制限
       if (this.e_x - this.p_x < 220) {
         this.p_x = this.p_x + 10
