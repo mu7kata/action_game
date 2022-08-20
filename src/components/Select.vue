@@ -1,24 +1,19 @@
 <template>
   <div id="app">
     <h1>キャラクター選択画面</h1>
-    <h3>選択</h3>
+    <h3>選択：{{ selectPlayerDisplayName }}</h3>
     <div class="selectImgArea">
-      <img class="selectImg" :src="require(`@/assets/img/${selectPlayer}_stand.gif`)" alt="">
+      <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
     <router-link :to="`battle/${selectPlayer}`">スタート</router-link>
     <div class="bl_media_container">
       <div class="bl_media_itemWrapper" v-for="player in playerList">
         <div class="bl_media_item">
-          <p class="img">
-            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_stand.gif`)" alt="">
-          </p>
-          <h3>{{ player.displayName }}</h3>
-          <input type="button" @click="selectPlayer = player.imgName" value="選択"/>
+            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
+          <input type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -28,12 +23,13 @@ export default {
   components: {},
   data() {
     return {
-      selectPlayer: 'eda',
+      selectPlayerImgName: 'eda',
+      selectPlayerDisplayName:'eda',
       playerList: [
         {imgName: 'eda', displayName: 'eda'},
         {imgName: 'kuni', displayName: 'kuni'},
         {imgName: 'haru', displayName: 'haru'},
-        {imgName: 'kaki', displayName: 'kaki'}
+        {imgName: 'kaki', displayName: 'kaki'},
       ]
     }
   },
@@ -57,7 +53,7 @@ export default {
 /* ここからカードレイアウトのスタイリング */
 /* PC　3カラム */
 .bl_media_container {
-  width: 50%;
+  width: 45%;
   display: flex;
   flex-wrap: wrap;
   /*margin: calc(-30px / 2);*/
@@ -72,7 +68,7 @@ export default {
 
 .bl_media_item {
   outline: 1px solid #000;
-  font-size: 1.5vw;
+  background-color: #dcdcdc;
 }
 
 /* タブレット　2カラム */
@@ -96,7 +92,7 @@ export default {
 
 .cardImg {
   width: 100%;
-  height: 200px;
+  height: 140px;
   object-fit: cover;
   object-position: 100% 10%
 }
