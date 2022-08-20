@@ -1,43 +1,19 @@
 <template>
   <div id="app">
-    <h1>選択画面</h1>
+    <h1>キャラクター選択画面</h1>
+    <h3>選択</h3>
     <div class="selectImgArea">
-      <img class="selectImg" :src="require(`@/assets/img/${player}_stand.gif`)" alt="">
+      <img class="selectImg" :src="require(`@/assets/img/${selectPlayer}_stand.gif`)" alt="">
     </div>
-    <router-link :to="`battle/${player}`">スタート</router-link>
+    <router-link :to="`battle/${selectPlayer}`">スタート</router-link>
     <div class="bl_media_container">
-      <div class="bl_media_itemWrapper">
+      <div class="bl_media_itemWrapper" v-for="player in playerList">
         <div class="bl_media_item">
-          <p class="img"><img class="cardImg" :src="require(`@/assets/img/haru_stand.gif`)" alt=""></p>
-          <h3>haru</h3>
-          <input type="button" @click="player = 'haru'" value="選択"/>
-        </div>
-      </div>
-      <div class="bl_media_itemWrapper">
-        <div class="bl_media_item">
-          <p class="img"><img class="cardImg" :src="require(`@/assets/img/kaki_stand.gif`)" alt=""></p>
-          <h3>kaki</h3>
-          <input type="button" @click="player = 'kaki'" value="選択"/>
-        </div>
-      </div>
-      <div class="bl_media_itemWrapper">
-        <div class="bl_media_item">
-          <p class="img"><img class="cardImg" :src="require(`@/assets/img/kuni_stand.gif`)" alt=""></p>
-          <h3>kuni</h3>
-          <input type="button" @click="player = 'kuni'" value="選択"/>
-        </div>
-      </div>
-      <div class="bl_media_itemWrapper">
-        <div class="bl_media_item">
-          <p class="img"><img class="cardImg" :src="require(`@/assets/img/eda_stand.gif`)" alt=""></p>
-          <h3>eda</h3>
-          <input type="button" @click="player = 'eda'" value="選択"/>
-        </div>
-      </div>
-      <div class="bl_media_itemWrapper">
-        <div class="bl_media_item">
-          <p class="img"><img src="img/..." alt=""></p>
-          <h3>coming soon...</h3>
+          <p class="img">
+            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_stand.gif`)" alt="">
+          </p>
+          <h3>{{ player.displayName }}</h3>
+          <input type="button" @click="selectPlayer = player.imgName" value="選択"/>
         </div>
       </div>
     </div>
@@ -52,7 +28,13 @@ export default {
   components: {},
   data() {
     return {
-      player: 'eda'
+      selectPlayer: 'eda',
+      playerList: [
+        {imgName: 'eda', displayName: 'eda'},
+        {imgName: 'kuni', displayName: 'kuni'},
+        {imgName: 'haru', displayName: 'haru'},
+        {imgName: 'kaki', displayName: 'kaki'}
+      ]
     }
   },
   methods: {}
@@ -67,17 +49,19 @@ export default {
   padding: 0;
 }
 
-img {
-  width: 100%;
-  vertical-align: bottom;
-}
+/*img {*/
+/*  width: 100%;*/
+/*  vertical-align: bottom;*/
+/*}*/
 
 /* ここからカードレイアウトのスタイリング */
 /* PC　3カラム */
 .bl_media_container {
+  width: 50%;
   display: flex;
   flex-wrap: wrap;
-  margin: calc(-30px / 2);
+  /*margin: calc(-30px / 2);*/
+  margin: 0 auto;
   padding: 30px;
 }
 
@@ -105,15 +89,20 @@ img {
   }
 }
 
-.selectImg{
+.selectImg {
   width: 10%;
   border: solid 2px #00bfff;
 }
-.cardImg{
+
+.cardImg {
   width: 100%;
   height: 200px;
   object-fit: cover;
   object-position: 100% 10%
 }
 
+h1 {
+  text-align: left;
+  margin: 1em;
+}
 </style>
