@@ -51,7 +51,7 @@ export default {
       enemyStatus: '',
     }
   }, mounted() {
-    this.player = this.$route.params.playerName;
+    this.player = this.$route.params.selectPlayerImgName;
     this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
