@@ -13,6 +13,7 @@
           </div>
         </div>
         <div class="battleField">
+          <modal  :matchEndMessage="matchEndMessage" v-show="modal"></modal>
           <div class="player">
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
           </div>
@@ -31,10 +32,12 @@
 </template>
 
 <script>
-
+import GameResult from "./GameResult.vue";
 export default {
   name: 'app',
-  components: {},
+  components: {
+    GameResult,
+  },
   data() {
     return {
       player: '',
@@ -49,6 +52,7 @@ export default {
       keyCode: null,
       playerStatus: '',
       enemyStatus: '',
+      matchEndMessage: "テスト",
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -89,11 +93,11 @@ export default {
         }
         , 450
       );
-      //物体同士の正徳を検知したらダメージを減らす
+      //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
         this.e_life_decrease();
         setTimeout(() => {
-            this.e_x = +550;
+            // this.e_x = +550;
           }
           , 500
         );
@@ -130,6 +134,7 @@ export default {
     deadMove() {
       this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
       this.playerStatus = 'dead';
+      this.showGameResult();
     },
     p_life_decrease() {
       if (this.playerStatus == 'gard') {
@@ -196,6 +201,7 @@ export default {
         , 250
       );
       this.enemyStatus = 'dead';
+      this.showGameResult();
     },
     enemyAutoAction() {
       this.enemyMove();
@@ -270,6 +276,7 @@ export default {
     enemyDamageMove() {
       this.enemyImage = require('@/assets/img/enamy_1_damege.gif');
       this.enemyStatus = 'damage';
+      this.e_x = +650;
       setTimeout(() => {
           this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
           this.enemyStatus = '';
@@ -305,7 +312,19 @@ export default {
 
       this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
-    }
+    },
+    showGameResult() {
+      // モーダル表示する際の処理が必要ならここに書く
+      this.modal = true;
+
+      if(this.p_life <= 0){
+        this.matchEndMessage = '敗北'
+      }
+      if(this.e_life <= 0){
+        this.matchEndMessage = '勝利'
+      }
+      //
+    },
   }
 }
 </script>
