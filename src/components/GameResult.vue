@@ -11,6 +11,9 @@
         <a v-if="matchEndMessage == 'lose'" class="btn btn-dark" @click="reload()">
           もう一度戦う <i class="bi bi-arrow-clockwise"></i>
         </a>
+        <a class="pt-5" href="/">
+          ホームへ戻る
+        </a>
       </div>
     </div>
   </div>

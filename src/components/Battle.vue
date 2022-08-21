@@ -53,6 +53,7 @@ export default {
       playerStatus: '',
       enemyStatus: '',
       matchEndMessage: "",
+      gameResult:false
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -60,7 +61,6 @@ export default {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
-    this.showGameResult();
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
@@ -68,7 +68,7 @@ export default {
   methods: {
     rightMove() {
       //移動制限
-      if (this.p_x == 950) {
+      if (this.p_x == 1150) {
         return;
       }
       //敵との距離制限
@@ -80,7 +80,7 @@ export default {
     },
     leftMove() {
       //移動制限
-      if (this.p_x < 50) {
+      if (this.p_x < -100) {
         return;
       }
       this.p_x = this.p_x - 50
@@ -244,8 +244,8 @@ export default {
       if (this.e_x < 0) {
         this.e_x = 10;
       }
-      if (this.e_x > 900) {
-        this.e_x = 850;
+      if (this.e_x > 1100) {
+        this.e_x = 1050;
       }
 
       //敵との距離制限
@@ -319,7 +319,6 @@ export default {
     showGameResult() {
       // モーダル表示する際の処理が必要ならここに書く
       this.gameResult = true;
-      this.matchEndMessage = 'lose'
       if(this.p_life <= 0){
         this.matchEndMessage = 'lose'
       }
