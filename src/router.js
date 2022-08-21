@@ -13,7 +13,7 @@ export default new Router({
       component: Select
     },
     {
-      path: '/battle/:playerName',
+      path: '/battle/:selectPlayerImgName',
       name: 'Battle',
       component: Battle
     }
