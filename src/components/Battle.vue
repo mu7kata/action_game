@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="battleField">
-          <modal  :matchEndMessage="matchEndMessage" v-show="modal"></modal>
+          <GameResult  :matchEndMessage="matchEndMessage" v-show="gameResult"></GameResult>
           <div class="player">
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
           </div>
@@ -25,6 +25,7 @@
           <button @click="leftMove">左</button>
           <button @click="rightMove">右</button>
           <button @click="attackMove">攻撃</button>
+          <button @click="showGameResult">テスト</button>
         </div>
       </div>
     </div>
@@ -52,7 +53,7 @@ export default {
       keyCode: null,
       playerStatus: '',
       enemyStatus: '',
-      matchEndMessage: "テスト",
+      matchEndMessage: "",
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -175,10 +176,13 @@ export default {
       this.enemyDamageMove();
 
       setTimeout(() => {
-          this.e_x = this.e_x + 200;
-          console.log(this.e_x)
+          if (this.e_x > 1100) {
+            this.e_x = 1000;
+          }else{
+          this.e_x = this.e_x + 150;
+          }
         }
-        , 500
+        , 300
       );
     },
     isConflict() {
@@ -276,7 +280,6 @@ export default {
     enemyDamageMove() {
       this.enemyImage = require('@/assets/img/enamy_1_damege.gif');
       this.enemyStatus = 'damage';
-      this.e_x = +650;
       setTimeout(() => {
           this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
           this.enemyStatus = '';
@@ -315,13 +318,13 @@ export default {
     },
     showGameResult() {
       // モーダル表示する際の処理が必要ならここに書く
-      this.modal = true;
+      this.gameResult = true;
 
       if(this.p_life <= 0){
-        this.matchEndMessage = '敗北'
+        this.matchEndMessage = 'lose'
       }
       if(this.e_life <= 0){
-        this.matchEndMessage = '勝利'
+        this.matchEndMessage = 'win'
       }
       //
     },
