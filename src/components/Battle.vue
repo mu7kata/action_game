@@ -37,19 +37,22 @@ export default {
   components: {},
   data() {
     return {
+      player: '',
       p_x: 0,
       p_y: 0,
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
-      playerImage: require('@/assets/img/kaki_stand.gif'),
+      playerImage: '',
       enemyImage: require('@/assets/img/enamy_1_stand.gif'),
       p_life: 10,
       e_life: 10,
       keyCode: null,
       playerStatus: '',
-      enemyStatus: ''
+      enemyStatus: '',
     }
   }, mounted() {
+    this.player = this.$route.params.playerName;
+    this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
@@ -63,6 +66,11 @@ export default {
       if (this.p_x == 950) {
         return;
       }
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.p_x = this.p_x - 10
+        return;
+      }
       this.p_x = this.p_x + 50
     },
     leftMove() {
@@ -73,12 +81,13 @@ export default {
       this.p_x = this.p_x - 50
     },
     attackMove() {
-      this.playerImage = require('@/assets/img/kaki_attack.gif');
-
+      this.playerImage = require(`@/assets/img/${this.player}_attack.gif`);
+      this.playerStatus = 'attack';
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerStatus = '';
         }
-        , 200
+        , 450
       );
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
@@ -91,8 +100,7 @@ export default {
       }
     },
     damageMove() {
-      console.log('damege');
-      this.playerImage = require('@/assets/img/kaki_damage.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
       this.playerStatus = 'damage';
       if (this.p_life <= 0) {
         this.deadMove();
@@ -100,7 +108,7 @@ export default {
       }
 
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 500
@@ -108,42 +116,65 @@ export default {
 
     },
     gardMove() {
-      this.playerImage = require('@/assets/img/kaki_gard.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_gard.gif`);
 
       setTimeout(() => {
-          this.playerImage = require('@/assets/img/kaki_stand.gif');
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
           this.playerStatus = '';
         }
-        , 3000
+        , 4000
       );
       document.addEventListener('keyup', this.onKeyUp);
       this.playerStatus = 'gard';
     },
     deadMove() {
-      this.playerImage = require('@/assets/img/kaki_dead.gif');
+      this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
       this.playerStatus = 'dead';
     },
     p_life_decrease() {
-      if (this.playerStatus == 'gard' || this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus == 'gard') {
+        this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
+        setTimeout(() => {
+            this.p_x = this.p_x - 150;
+
+          }
+          , 300
+        );
         return;
       }
 
-      this.p_life = this.p_life - 5;
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
+
+      this.p_life = this.p_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
       this.damageMove();
-
+      setTimeout(() => {
+          this.p_x = this.p_x - 200;
+        }
+        , 300
+      );
     },
     e_life_decrease() {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
+
       this.e_life = this.e_life - 1;
       //体力ゲージ消費処理
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       lifeBar[0].style.width = this.e_life * 10 + "%";
       this.enemyDamageMove();
+
+      setTimeout(() => {
+          this.e_x = this.e_x + 200;
+          console.log(this.e_x)
+        }
+        , 500
+      );
     },
     isConflict() {
       const enemyDom = this.$refs.enemy;
@@ -198,12 +229,21 @@ export default {
       } else {
         this.e_x = this.e_x + x_num;
       }
+
+      //移動制限(画面に合わせて)
       if (this.e_x < 0) {
         this.e_x = 10;
       }
       if (this.e_x > 900) {
         this.e_x = 850;
       }
+
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.p_x = this.p_x + 10
+        return;
+      }
+
 
     },
     getRandam(n, m) {
@@ -216,17 +256,12 @@ export default {
     enemyAttackMove() {
       this.enemyImage = require('@/assets/img/enamy_1_attack.gif');
 
-
       setTimeout(() => {
           this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
         }
         , 880
       );
-      setTimeout(() => {
-          this.p_x = -50;
-        }
-        , 500
-      );
+
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
         this.p_life_decrease();
@@ -248,7 +283,6 @@ export default {
         return;
       }
       this.keyCode = event.keyCode
-
       const ArrowRight = 39;
       const ArrowLeft = 37;
       const ArrowDown = 40;
@@ -268,7 +302,8 @@ export default {
       }
     },
     onKeyUp() {
-      this.playerImage = require('@/assets/img/kaki_stand.gif');
+
+      this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
     }
   }
