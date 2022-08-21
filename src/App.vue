@@ -1,29 +1,21 @@
-<!--<template>-->
-<!--  <div id="app">-->
-<!--    <Battle/>-->
-<!--&lt;!&ndash;    <moving-box/>&ndash;&gt;-->
-<!--&lt;!&ndash;    <router-view/>&ndash;&gt;-->
-<!--  </div>-->
-<!--</template>-->
 <template>
-  <div id="app" class="appContainer">
-    <router-view />
+  <div id="app">
+    <Battle/>
+<!--    <moving-box/>-->
+<!--    <router-view/>-->
   </div>
 </template>
 
 <script>
-// import Battle from "./components/Battle"
-// // import movingBox from "./components/moving-box"
-//
-// export default {
-//   name: "App",
-//   components: {
-//     Battle
-//   }
-// }
+import Battle from "./components/Battle"
+// import movingBox from "./components/moving-box"
+
 export default {
   name: "App",
-};
+  components: {
+    Battle
+  }
+}
 </script>
 
 <style>
