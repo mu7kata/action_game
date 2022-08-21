@@ -25,7 +25,6 @@
           <button @click="leftMove">左</button>
           <button @click="rightMove">右</button>
           <button @click="attackMove">攻撃</button>
-          <button @click="showGameResult">テスト</button>
         </div>
       </div>
     </div>
@@ -61,6 +60,7 @@ export default {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
+    this.showGameResult();
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
@@ -319,7 +319,7 @@ export default {
     showGameResult() {
       // モーダル表示する際の処理が必要ならここに書く
       this.gameResult = true;
-
+      this.matchEndMessage = 'lose'
       if(this.p_life <= 0){
         this.matchEndMessage = 'lose'
       }

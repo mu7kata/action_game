@@ -4,8 +4,13 @@
       <img class="resultImg" :src="require(`@/assets/img/${this.matchEndMessage}.png`)" alt="resultImg">
       {{this.matchEndMessage}}
       <div>
-        <a :href="`/#/Battle/${this.$route.params.selectPlayerImgName}/2`">次の対戦へすすむ</a>
-        <a :href="`/#/Battle/${this.$route.params.selectPlayerImgName}/`">もう一度戦う</a>
+        <a v-if="matchEndMessage == 'win'" class="btn btn-dark" :href="`/#/Battle/${this.$route.params.selectPlayerImgName}/2`">
+          次の対戦へすすむ <i class="bi bi-arrow-right"></i>
+        </a>
+        <a v-if="matchEndMessage == 'lose'" class="btn btn-dark" :href="`/#/Battle/${this.$route.params.selectPlayerImgName}/2`">
+          もう一度戦う <i class="bi bi-arrow-clockwise"></i>
+        </a>
+
       </div>
     </div>
   </div>
@@ -14,7 +19,13 @@
 export default {
   name: "GameResult",
   props: ["matchEndMessage"],
-  methods: {},
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+  },
 };
 </script>
 
@@ -29,5 +40,6 @@ export default {
 .resultImg {
   width: 60%;
 }
+
 
 </style>
