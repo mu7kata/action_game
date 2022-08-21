@@ -21,11 +21,6 @@
             <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
           </div>
         </div>
-        <div class="action">
-          <button @click="leftMove">左</button>
-          <button @click="rightMove">右</button>
-          <button @click="attackMove">攻撃</button>
-        </div>
       </div>
     </div>
   </div>

@@ -1,22 +1,26 @@
 <template>
   <div id="app">
     <h1>キャラクター選択画面</h1>
-    <h3>選択：{{ selectPlayerImgName }}</h3>
+    <h3>選択中：{{ selectPlayerImgName }}</h3>
     <div class="selectImgArea">
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
     <router-link :to="`battle/${selectPlayerImgName}`">スタート</router-link>
+    <div class="w-50 m-auto text-start pt-5">
+      <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
+    </div>
     <div class="bl_media_container">
       <div class="bl_media_itemWrapper" v-for="player in playerList">
         <div class="bl_media_item" @click="selectPlayerDisplayName = player.displayName">
-        <label >
-          <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
-          <input style="display: none" type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
-        </label>
-      </div>
+          <label>
+            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
+            <input style="display: none" type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
+          </label>
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -56,13 +60,13 @@ export default {
   flex-wrap: wrap;
   /*margin: calc(-30px / 2);*/
   margin: 0 auto;
-  padding: 30px;
+  padding: 10px 30px 30px 30px;
+
 }
 
 .bl_media_itemWrapper {
   width: calc(100% / 4 - 30px);
   margin: calc(30px / 2);
-  padding-top:5em ;
 }
 
 .bl_media_item {
@@ -78,7 +82,7 @@ export default {
 
 }
 
-.bl_media_item:active{
+.bl_media_item:active {
   box-shadow: 0 0.05rem 0.2rem rgb(0 0 0 / 90%);
 }
 
@@ -109,7 +113,7 @@ export default {
   object-position: 100% 10%
 }
 
-.cardImg:hover{
+.cardImg:hover {
   cursor: pointer;
 }
 
@@ -117,6 +121,7 @@ h1 {
   text-align: left;
   margin: 1em;
 }
+
 label {
   display: block;
 }
