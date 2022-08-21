@@ -211,6 +211,13 @@ export default {
       );
     },
     enemyMove() {
+
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.e_x = this.e_x + 50
+        return;
+      }
+
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
@@ -219,7 +226,7 @@ export default {
         this.enemyDeadMove();
         return;
       }
-      let x_num = this.getRandam(-100, 100);
+      let x_num = this.getRandam(-100, 50);
       if (this.isConflict()) {
         //攻撃をランダムに実行
         if ((this.e_x % 3) == 0 && this.e_x != 0) {
@@ -230,7 +237,7 @@ export default {
           }
           , 400
         );
-
+       return;
       } else {
         this.e_x = this.e_x + x_num;
       }
@@ -243,11 +250,6 @@ export default {
         this.e_x = 1050;
       }
 
-      //敵との距離制限
-      if (this.e_x - this.p_x < 220) {
-        this.p_x = this.p_x + 10
-        return;
-      }
 
 
     },
