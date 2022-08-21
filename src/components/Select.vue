@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>キャラクター選択画面</h1>
-    <h3>選択中：{{ selectPlayerImgName }}</h3>
+    <h3>選択中：{{ selectPlayerDisplayName }}</h3>
     <div class="selectImgArea">
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
@@ -29,13 +29,13 @@ export default {
   components: {},
   data() {
     return {
-      selectPlayerImgName: 'eda',
-      selectPlayerDisplayName: 'eda',
+      selectPlayerImgName: 'kaki',
+      selectPlayerDisplayName: 'かき',
       playerList: [
-        {imgName: 'eda', displayName: 'eda'},
-        {imgName: 'kuni', displayName: 'kuni'},
-        {imgName: 'haru', displayName: 'haru'},
-        {imgName: 'kaki', displayName: 'kaki'},
+        {imgName: 'kaki', displayName: 'かき'},
+        {imgName: 'kuni', displayName: 'くに'},
+        {imgName: 'eda', displayName: 'えだ'},
+        {imgName: 'haru', displayName: 'はる'},
       ]
     }
   },
@@ -61,7 +61,6 @@ export default {
   /*margin: calc(-30px / 2);*/
   margin: 0 auto;
   padding: 10px 30px 30px 30px;
-
 }
 
 .bl_media_itemWrapper {
@@ -79,7 +78,7 @@ export default {
 .bl_media_item:hover {
   box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 90%);
   transition: all .5s;
-
+  background-color: #dddddd;
 }
 
 .bl_media_item:active {
