@@ -7,6 +7,8 @@
             <div class="player-life-bar"></div>
             <div class="life-mark"></div>
           </div>
+<!--          {{ this.$store.state.step }}-->
+          {{ this.$store.getters}}
           <div class="life-frame">
             <div class="enemy-life-bar"></div>
             <div class="life-mark"></div>
@@ -35,7 +37,8 @@
 
 <script>
 import GameResult from "./GameResult.vue";
-import enemy from "../js/enemy.js";
+import enemy from "../store/enemy.js";
+
 
 export default {
   name: 'app',
@@ -58,8 +61,8 @@ export default {
       enemyStatus: '',
       matchEndMessage: "",
       gameResult: false,
-      enemy: enemy.state,
-      maxEnemyLife: enemy.state.life //HACK:
+      enemy: this.$store.getters,
+      maxEnemyLife: this.$store.getters.life //HACK:
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -67,6 +70,7 @@ export default {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
+    this.$store.commit("selectEnemy", 'test');
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
@@ -175,7 +179,7 @@ export default {
       }
 
       //体力ゲージ消費処理
-      this.enemy.life = this.enemy.life - 1;
+      this.$store.commit("changeLife", 1)
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       lifeBar[0].style.width = this.enemy.life / this.maxEnemyLife * 100 + "%";
       this.enemyDamageMove();
