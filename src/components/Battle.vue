@@ -13,11 +13,18 @@
           </div>
         </div>
         <div class="battleField">
-          <GameResult  :matchEndMessage="matchEndMessage" v-show="gameResult"></GameResult>
+          <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult"></GameResult>
           <div class="player">
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
           </div>
           <div class="enemy">
+            <!--            <Enemy-->
+            <!--              :lateralPosition="e_x"-->
+            <!--              :verticalPosition="e_y"-->
+            <!--              :img="enemyImage"-->
+            <!--              >-->
+            <!--            </Enemy>-->
+            <!--            <Enemy ref=""/>-->
             <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
           </div>
         </div>
@@ -28,6 +35,8 @@
 
 <script>
 import GameResult from "./GameResult.vue";
+import enemy from "../js/enemy.js";
+
 export default {
   name: 'app',
   components: {
@@ -48,7 +57,9 @@ export default {
       playerStatus: '',
       enemyStatus: '',
       matchEndMessage: "",
-      gameResult:false
+      gameResult: false,
+      enemy: enemy.state,
+      maxEnemyLife: enemy.state.life //HACK:
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -147,9 +158,8 @@ export default {
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
         return;
       }
-
-      this.p_life = this.p_life - 1;
       //体力ゲージ消費処理
+      this.p_life = this.p_life - this.enemy.attack;
       const lifeBar = document.getElementsByClassName('player-life-bar');
       lifeBar[0].style.width = this.p_life * 10 + "%"
       this.damageMove();
@@ -164,17 +174,17 @@ export default {
         return;
       }
 
-      this.e_life = this.e_life - 1;
       //体力ゲージ消費処理
+      this.enemy.life = this.enemy.life - 1;
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
-      lifeBar[0].style.width = this.e_life * 10 + "%";
+      lifeBar[0].style.width = this.enemy.life / this.maxEnemyLife * 100 + "%";
       this.enemyDamageMove();
 
       setTimeout(() => {
           if (this.e_x > 1100) {
             this.e_x = 1000;
-          }else{
-          this.e_x = this.e_x + 150;
+          } else {
+            this.e_x = this.e_x + 150;
           }
         }
         , 300
@@ -207,11 +217,10 @@ export default {
       setTimeout(() => {
           this.enemyAutoAction()
         }
-        , 300
+        , this.enemy.speed
       );
     },
     enemyMove() {
-
       //敵との距離制限
       if (this.e_x - this.p_x < 220) {
         this.e_x = this.e_x + 50
@@ -226,7 +235,7 @@ export default {
         this.enemyDeadMove();
         return;
       }
-      let x_num = this.getRandam(-100, 50);
+      let x_num = this.getRandom(this.enemy.motionRange);
       if (this.isConflict()) {
         //攻撃をランダムに実行
         if ((this.e_x % 3) == 0 && this.e_x != 0) {
@@ -237,7 +246,7 @@ export default {
           }
           , 400
         );
-       return;
+        return;
       } else {
         this.e_x = this.e_x + x_num;
       }
@@ -250,13 +259,12 @@ export default {
         this.e_x = 1050;
       }
 
-
-
     },
-    getRandam(n, m) {
+    getRandom(motionRange) {
+      let n = motionRange / 2
       let num = 0;
       for (let i = 0; i < 5; i++) {
-        num = Math.floor(Math.random() * (m + 1 - n)) + n;
+        num = Math.floor(Math.random() * (-motionRange + 1 - n)) + n;
       }
       return num;
     },
@@ -316,10 +324,10 @@ export default {
     showGameResult() {
       // モーダル表示する際の処理が必要ならここに書く
       this.gameResult = true;
-      if(this.p_life <= 0){
+      if (this.p_life <= 0) {
         this.matchEndMessage = 'lose'
       }
-      if(this.e_life <= 0){
+      if (this.e_life <= 0) {
         this.matchEndMessage = 'win'
       }
       //
