@@ -4,11 +4,10 @@
       <img class="resultImg" :src="require(`@/assets/img/${this.matchEndMessage}.png`)" alt="resultImg">
       {{ this.matchEndMessage }}
       <div>
-        <a v-if="matchEndMessage == 'win'" class="btn btn-dark"
-           :href="`/#/Battle/${this.$route.params.selectPlayerImgName}/2`">
+        <router-link v-if="matchEndMessage == 'win'" :to="`/battle/${this.$route.params.selectPlayerImgName}/2`">
           次の対戦へすすむ <i class="bi bi-arrow-right"></i>
-        </a>
-        <a v-if="matchEndMessage == 'lose'" class="btn btn-dark" @click="reload()">
+        </router-link>
+        <a v-if="matchEndMessage == 'lose'" class="btn btn-dark">
           もう一度戦う <i class="bi bi-arrow-clockwise"></i>
         </a>
         <a class="pt-5" href="/">
@@ -17,7 +16,7 @@
       </div>
     </div>
   </div>
-</template>win
+</template>
 <script>
 export default {
   name: "GameResult",
@@ -26,9 +25,9 @@ export default {
     return {}
   },
   methods: {
-    reload(){
+    reload() {
       this.$router.go({path: this.$router.currentRoute.path, force: true});
-    }
+    },
   },
 };
 </script>

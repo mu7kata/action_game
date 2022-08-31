@@ -18,7 +18,7 @@ export default new Router({
       component: Select
     },
     {
-      path: '/battle/:selectPlayerImgName',
+      path: '/battle/:selectPlayerImgName/:enemyNum',
       name: 'Battle',
       component: Battle
     }

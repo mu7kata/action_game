@@ -5,7 +5,7 @@
     <div class="selectImgArea">
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
-    <router-link :to="`battle/${selectPlayerImgName}`">スタート</router-link>
+    <router-link :to="`battle/${selectPlayerImgName}/1`">スタート</router-link>
     <div class="w-50 m-auto text-start pt-5">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>

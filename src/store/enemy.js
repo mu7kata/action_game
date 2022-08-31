@@ -21,12 +21,18 @@ const mutations = {
   selectEnemy(state, value) {
     var selectEnemy =
       {
-        test : {
-            attack: 1,
-            life: 5,
-            speed: 100,
-            motionRange: 100
-          }
+        1: {   //HACK:数字で管理しない方がいいかも
+          attack: 1,
+          life: 2,
+          speed: 100,
+          motionRange: 100
+        },
+        2: {   //HACK:数字で管理しない方がいいかも
+          attack: 5,
+          life: 10,
+          speed: 200,
+          motionRange: 100
+        }
       }
     ;
 

@@ -7,15 +7,15 @@
             <div class="player-life-bar"></div>
             <div class="life-mark"></div>
           </div>
-<!--          {{ this.$store.state.step }}-->
-          {{ this.$store.getters}}
+          <!--          {{ this.$store.state.step }}-->
+          {{ this.$store.getters }}
           <div class="life-frame">
             <div class="enemy-life-bar"></div>
             <div class="life-mark"></div>
           </div>
         </div>
         <div class="battleField">
-          <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult"></GameResult>
+          <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult" ref="gameResult"></GameResult>
           <div class="player">
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
           </div>
@@ -70,10 +70,17 @@ export default {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
-    this.$store.commit("selectEnemy", 'test');
+    this.$store.commit("selectEnemy", this.$route.params.enemyNum);
+
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
+  },
+  beforeRouteUpdate (to, from, next) {
+    //再描画前のアクション
+    next();
+    //再描画後のアクション
+    this.$refs.gameResult.reload();
   },
   methods: {
     rightMove() {
@@ -235,7 +242,7 @@ export default {
         return;
       }
       //死亡アクション
-      if (this.e_life <= 0) {
+      if (this.enemy.life <= 0) {
         this.enemyDeadMove();
         return;
       }
@@ -331,7 +338,7 @@ export default {
       if (this.p_life <= 0) {
         this.matchEndMessage = 'lose'
       }
-      if (this.e_life <= 0) {
+      if (this.enemy.life <= 0) {
         this.matchEndMessage = 'win'
       }
       //
