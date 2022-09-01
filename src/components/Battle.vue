@@ -20,13 +20,6 @@
             <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
           </div>
           <div class="enemy">
-            <!--            <Enemy-->
-            <!--              :lateralPosition="e_x"-->
-            <!--              :verticalPosition="e_y"-->
-            <!--              :img="enemyImage"-->
-            <!--              >-->
-            <!--            </Enemy>-->
-            <!--            <Enemy ref=""/>-->
             <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
           </div>
         </div>
@@ -62,7 +55,7 @@ export default {
       matchEndMessage: "",
       gameResult: false,
       enemy: this.$store.getters,
-      maxEnemyLife: this.$store.getters.life //HACK:
+      maxEnemyLife: '' //HACK:
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -71,7 +64,7 @@ export default {
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
     this.$store.commit("selectEnemy", this.$route.params.enemyNum);
-
+    this.maxEnemyLife = this.enemy.life;
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
