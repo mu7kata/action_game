@@ -27,9 +27,9 @@ const mutations = {
           speed: 100,
           motionRange: 100
         },
-        2: {   //HACK:数字で管理しない方がいいかも
+        2: {
           attack: 5,
-          life: 10,
+          life: 1,
           speed: 200,
           motionRange: 100
         }
