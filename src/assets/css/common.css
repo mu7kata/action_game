@@ -17,6 +17,7 @@
   inset -4px 0 gray,
   inset 0 -4px gray;
   padding: 0.5rem;
+  border: none;
 }
 
 .button:active{
