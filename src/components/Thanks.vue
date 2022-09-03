@@ -1,10 +1,14 @@
 <template>
   <div id="app">
     <div class="gameTitle w-100">
-      <h1>おめでとう！ゲームクリアです！</h1>
-      <p>この度は遊んでいただきありがとうございました!
-        <br>今後アップデートする、、かもです。
-      </p>
+      <div v-if="this.$route.params.gameResult == 'clear'">
+        <h1>おめでとう！ゲームクリアです！</h1>
+        <p>この度は遊んでいただきありがとうございました!<br>ゲームは今後アップデートする、、かもです。</p>
+      </div>
+      <div v-if="this.$route.params.gameResult == 'lose'">
+        <h1>残念・・、ゲームオーバーです</h1>
+        <p>再チャレンジお待ちしています</p>
+      </div>
       <div class="mb-4">
         <img class="object" ref="player" :src="require('@/assets/img/enamy_1_stand.gif')">
       </div>
@@ -18,7 +22,7 @@
 </template>
 <script>
 export default {
-  name: "Thanks"
+  name: "Thanks",
 }
 </script>
 

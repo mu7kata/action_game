@@ -24,7 +24,7 @@ export default new Router({
       component: Battle
     },
     {
-      path: '/battle/thanks',
+      path: '/thanks/:gameResult',
       name: 'Thanks',
       component: Thanks
     }

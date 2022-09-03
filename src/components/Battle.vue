@@ -41,11 +41,13 @@
 
 <script>
 import GameResult from "./GameResult.vue";
+import Thanks from "./Thanks.vue";
 
 export default {
   name: 'app',
   components: {
     GameResult,
+    Thanks
   },
   data() {
     return {

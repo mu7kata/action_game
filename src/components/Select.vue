@@ -34,6 +34,11 @@
           バトルスタート <i class="bi bi-arrow-right ms-2"></i>
         </router-link>
       </div>
+      <div v-if="selectStatus">
+        <button class="button bg-light m-4" @click="confirmChara">
+          　<i class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす
+        </button>
+      </div>
     </div>
     <div class="w-50 m-auto text-start pt-5 fs-3">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
@@ -72,7 +77,10 @@ export default {
   },
   methods: {
     confirmChara() {
-      this.selectStatus = true
+      if (this.selectStatus == false) {
+        return this.selectStatus = true
+      }
+      return this.selectStatus = false
     },
     openAccordion() {
       let right = "bi bi-caret-right-fill me-2";
@@ -99,7 +107,8 @@ export default {
 .startButton {
   background-color: #00ffff;
 }
-.startArea{
+
+.startArea {
   color: #2E2E2E;
   text-decoration: none;
   box-shadow: 4px 0 black,
@@ -108,6 +117,7 @@ export default {
   0 -4px black;
   height: 9em;
 }
+
 /* ここからカードレイアウトのスタイリング */
 /* PC　3カラム */
 .bl_media_container {

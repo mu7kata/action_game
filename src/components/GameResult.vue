@@ -5,24 +5,20 @@
         <div v-if="matchEndMessage == 'win'">
           <h1 class="resultMsg gameWinMsg">かち！！！</h1>
           <router-link class="button" :to="`/battle/${this.$route.params.selectPlayerImgName}/${getNextEnemyPath()}`">
-            次の対戦へすすむ <i class="bi bi-arrow-right"></i>
+            　次の対戦へすすむ <i class="bi bi-arrow-right"></i>
           </router-link>
         </div>
         <div v-if="matchEndMessage == 'clear'">
           <h1 class="resultMsg gameWinMsg">かち！！！</h1>
-          <router-link class="button" :to="`/battle/thanks`">
-           　次へ <i class="bi bi-arrow-right"></i>
+          <router-link class="button" :to="`/thanks/${matchEndMessage}`">
+            　次へ <i class="bi bi-arrow-right"></i>
           </router-link>
         </div>
         <div v-if="matchEndMessage == 'lose'">
-          <h1 class="resultMsg gameLoseMsg">まけ・・・<br>ゲームオーバー</h1>
-          <a class="button p-2" @click="reload()">
-            もう一度戦う <i class="bi bi-arrow-clockwise"></i>
-          </a>
-          <br><br>
-          <a class="" href="/">
-            ホームへ戻る <i class="bi bi-house-door-fill"></i>
-          </a>
+          <h1 class="resultMsg gameLoseMsg">まけ・・・</h1>
+          <router-link class="button" :to="`/thanks/${matchEndMessage}`">
+            　次へ <i class="bi bi-arrow-right"></i>
+          </router-link>
         </div>
       </div>
     </div>
