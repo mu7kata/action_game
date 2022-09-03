@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from "@/components/Home"
 import Battle from "@/components/Battle"
 import Select from "@/components/Select"
+import Thanks from "./components/Thanks";
 
 Vue.use(Router)
 
@@ -21,6 +22,11 @@ export default new Router({
       path: '/battle/:selectPlayerImgName/:enemyNum',
       name: 'Battle',
       component: Battle
+    },
+    {
+      path: '/battle/thanks',
+      name: 'Thanks',
+      component: Thanks
     }
   ]
 })

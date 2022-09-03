@@ -9,12 +9,10 @@
           </router-link>
         </div>
         <div v-if="matchEndMessage == 'clear'">
-          <h1 class="resultMsg gameWinMsg">かち！！！<br>
-            <span v-if="matchEndMessage == 'clear'" class="gameClearMsg">ゲームクリア</span>
-          </h1>
-          <a class="button p-2" href="/">
-            ホームへ戻る <i class="bi bi-house-door-fill"></i>
-          </a>
+          <h1 class="resultMsg gameWinMsg">かち！！！</h1>
+          <router-link class="button" :to="`/battle/thanks`">
+           　次へ <i class="bi bi-arrow-right"></i>
+          </router-link>
         </div>
         <div v-if="matchEndMessage == 'lose'">
           <h1 class="resultMsg gameLoseMsg">まけ・・・<br>ゲームオーバー</h1>
