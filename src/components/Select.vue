@@ -29,15 +29,13 @@
         </button>
       </div>
       <div v-if="selectStatus" class="startArea w-25 m-auto">
-        <p class="mb-4 pt-2 fs-4">5かい "かち" でゲームクリア</p>
-        <router-link class="button startButton p-3 fs-3" :to="`battle/${selectPlayerImgName}/1`">
+        <p class="mb-2 pt-2 fs-4">5かい "かち" でゲームクリア</p>
+        <div>
+        <router-link class="button startButton mb-2 fs-3" :to="`battle/${selectPlayerImgName}/1`">
           バトルスタート <i class="bi bi-arrow-right ms-2"></i>
         </router-link>
-      </div>
-      <div v-if="selectStatus">
-        <button class="button bg-light m-4" @click="confirmChara">
-          　<i class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす
-        </button>
+        </div>
+      <div v-if="selectStatus"><a  class="reSelectButton pt-4" @click="confirmChara">　<i class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす</a></div>
       </div>
     </div>
     <div class="w-50 m-auto text-start pt-5 fs-3">
@@ -106,6 +104,11 @@ export default {
 
 .startButton {
   background-color: #00ffff;
+  display: inline-block;
+}
+
+.reSelectButton:hover{
+  cursor:pointer;
 }
 
 .startArea {
@@ -115,7 +118,7 @@ export default {
   -4px 0 black,
   0 4px black,
   0 -4px black;
-  height: 9em;
+  height: 10em;
 }
 
 /* ここからカードレイアウトのスタイリング */
