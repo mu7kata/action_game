@@ -1,10 +1,3 @@
-<!--<template>-->
-<!--  <div id="app">-->
-<!--    <Battle/>-->
-<!--&lt;!&ndash;    <moving-box/>&ndash;&gt;-->
-<!--&lt;!&ndash;    <router-view/>&ndash;&gt;-->
-<!--  </div>-->
-<!--</template>-->
 <template>
   <div id="app" class="appContainer">
     <router-view />
@@ -12,15 +5,6 @@
 </template>
 
 <script>
-// import Battle from "./components/Battle"
-// // import movingBox from "./components/moving-box"
-//
-// export default {
-//   name: "App",
-//   components: {
-//     Battle
-//   }
-// }
 export default {
   name: "App",
 };

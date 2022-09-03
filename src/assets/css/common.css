@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'dotFont';
+  src: url('../font/k8x12.ttf') format('truetype');
+}
+#app {
+  font-family: 'dotFont', sans-serif !important;
+}
