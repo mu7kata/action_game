@@ -5,20 +5,36 @@
     <div class=" ">
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
-    <div class="mt-5">
-      <div v-if="!selectStatus" >
+
+    <div class="mt-3 fs-4 m-auto" style="width:14%">
+      <details class="text-start">
+        <summary @click="openAccordion">
+          <i :class="accordionButtonClass"></i> 操作方法（コマンド一覧)
+        </summary>
+        <p class="fs-6">※バトル中の画面にも表示されます</p>
+        <div class="m-auto w-100">
+          <ul class="text-start">
+            <li>弱こうげき ： スペースキー</li>
+            <li>強こうげき ： エンターキー</li>
+            <li>ガード ： ↓ キー</li>
+            <li>いどう ： ← → キー</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+    <div class="mt-3">
+      <div v-if="!selectStatus">
         <button class="button bg-light p-2 fs-4" @click="confirmChara">
-          <i class="bi bi-arrow-right me-2"></i> このキャラクターですすめる
+          　このキャラクターですすむ<i class="bi bi-arrow-right ms-2"></i>　
         </button>
       </div>
-      <div v-if="selectStatus">
-        <p class="mb-4 fs-4">5かい "かち" でゲームクリア</p>
+      <div v-if="selectStatus" class="startArea w-25 m-auto">
+        <p class="mb-4 pt-2 fs-4">5かい "かち" でゲームクリア</p>
         <router-link class="button startButton p-3 fs-3" :to="`battle/${selectPlayerImgName}/1`">
           バトルスタート <i class="bi bi-arrow-right ms-2"></i>
         </router-link>
       </div>
     </div>
-    <div></div>
     <div class="w-50 m-auto text-start pt-5 fs-3">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>
@@ -50,13 +66,23 @@ export default {
         {imgName: 'eda', displayName: 'えだ'},
         {imgName: 'haru', displayName: 'はる'},
       ],
-      selectStatus:false,
+      selectStatus: false,
+      accordionButtonClass: "bi bi-caret-right-fill me-2"
     }
   },
   methods: {
-    confirmChara(){
-      this.selectStatus =true
+    confirmChara() {
+      this.selectStatus = true
     },
+    openAccordion() {
+      let right = "bi bi-caret-right-fill me-2";
+      let down = "bi bi-caret-down-fill me-2";
+      if (this.accordionButtonClass == down) {
+        return this.accordionButtonClass = right;
+      }
+      return this.accordionButtonClass = down;
+    },
+
 
   }
 }
@@ -70,10 +96,18 @@ export default {
   padding: 0;
 }
 
-.startButton{
+.startButton {
   background-color: #00ffff;
 }
-
+.startArea{
+  color: #2E2E2E;
+  text-decoration: none;
+  box-shadow: 4px 0 black,
+  -4px 0 black,
+  0 4px black,
+  0 -4px black;
+  height: 9em;
+}
 /* ここからカードレイアウトのスタイリング */
 /* PC　3カラム */
 .bl_media_container {
