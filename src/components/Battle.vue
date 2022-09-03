@@ -7,7 +7,7 @@
             <div class="player-life-bar"></div>
             <div class="life-mark"></div>
           </div>
-          <!--          {{ this.$store.state.step }}-->
+          <!-- TODO: 削除する-->
           {{ this.$store.getters }}
           <div class="life-frame">
             <div class="enemy-life-bar"></div>
@@ -30,8 +30,6 @@
 
 <script>
 import GameResult from "./GameResult.vue";
-import enemy from "../store/enemy.js";
-
 
 export default {
   name: 'app',
@@ -69,7 +67,7 @@ export default {
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     //再描画前のアクション
     next();
     //再描画後のアクション
@@ -326,15 +324,18 @@ export default {
       this.playerStatus = '';
     },
     showGameResult() {
-      // モーダル表示する際の処理が必要ならここに書く
       this.gameResult = true;
       if (this.p_life <= 0) {
         this.matchEndMessage = 'lose'
       }
       if (this.enemy.life <= 0) {
         this.matchEndMessage = 'win'
+
+        if (this.$route.params.enemyNum == 2) {
+          this.matchEndMessage = 'clear'
+        }
       }
-      //
+
     },
   }
 }

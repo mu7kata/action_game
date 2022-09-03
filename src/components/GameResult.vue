@@ -1,18 +1,31 @@
 <template>
   <div id="gameResult">
-    <div class="resultMsg">
-      <img class="resultImg" :src="require(`@/assets/img/${this.matchEndMessage}.png`)" alt="resultImg">
-      {{ this.matchEndMessage }}
-      <div>
-        <router-link v-if="matchEndMessage == 'win'" :to="`/battle/${this.$route.params.selectPlayerImgName}/${getNextEnemyPath()}`">
-          次の対戦へすすむ <i class="bi bi-arrow-right"></i>
-        </router-link>
-        <a v-if="matchEndMessage == 'lose'" class="btn btn-dark" @click="reload()">
-          もう一度戦う <i class="bi bi-arrow-clockwise"></i>
-        </a>
-        <a class="pt-5" href="/">
-          ホームへ戻る
-        </a>
+    <div class="resultMsgArea">
+      <div class="">
+        <div v-if="matchEndMessage == 'win'">
+          <h1 class="resultMsg gameWinMsg">かち！！！</h1>
+          <router-link class="button" :to="`/battle/${this.$route.params.selectPlayerImgName}/${getNextEnemyPath()}`">
+            次の対戦へすすむ <i class="bi bi-arrow-right"></i>
+          </router-link>
+        </div>
+        <div v-if="matchEndMessage == 'clear'">
+          <h1 class="resultMsg gameWinMsg">かち！！！<br>
+            <span v-if="matchEndMessage == 'clear'" class="gameClearMsg">ゲームクリア</span>
+          </h1>
+          <a class="button p-2" href="/">
+            ホームへ戻る <i class="bi bi-house-door-fill"></i>
+          </a>
+        </div>
+        <div v-if="matchEndMessage == 'lose'">
+          <h1 class="resultMsg gameLoseMsg">まけ・・・<br>ゲームオーバー</h1>
+          <a class="button p-2" @click="reload()">
+            もう一度戦う <i class="bi bi-arrow-clockwise"></i>
+          </a>
+          <br><br>
+          <a class="" href="/">
+            ホームへ戻る <i class="bi bi-house-door-fill"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -28,10 +41,10 @@ export default {
     reload() {
       this.$router.go({path: this.$router.currentRoute.path, force: true});
     },
-    getNextEnemyPath(){
+    getNextEnemyPath() {
       let enemyString = this.$route.params.enemyNum;
       let enemyNum = Number(enemyString);
-      return enemyNum+1;
+      return enemyNum + 1;
     }
   },
 };
@@ -39,14 +52,32 @@ export default {
 
 <style scoped>
 
-.resultMsg {
+.resultMsgArea {
   position: absolute;
-  top: 20%;
-  left: 35%;
+  top: 15%;
+  right: 0%;
+  width: 100%;
 }
 
-.resultImg {
-  width: 60%;
+.resultMsg {
+  font-size: 5em;
+  -webkit-text-stroke: 4px #2E2E2E;
+  margin-top: 1.5%;
+  text-align: center;
+}
+
+.gameClearMsg {
+  font-size: 1em;
+  color: yellow;
+  -webkit-text-stroke: 4px #2E2E2E;
+}
+
+.gameWinMsg {
+  color: red;
+}
+
+.gameLoseMsg {
+  color: blue;
 }
 
 

@@ -5,7 +5,11 @@
     <div class="selectImgArea">
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
-    <router-link :to="`battle/${selectPlayerImgName}/1`">スタート</router-link>
+    <div class="mt-4">
+    <router-link class="button startButton p-3 fs-3" :to="`battle/${selectPlayerImgName}/1`">
+      バトルスタート <i class="bi bi-arrow-right ms-2"></i>
+    </router-link>
+    </div>
     <div class="w-50 m-auto text-start pt-5">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>
@@ -51,6 +55,9 @@ export default {
   padding: 0;
 }
 
+.startButton{
+  background-color: #00ffff;
+}
 
 /* ここからカードレイアウトのスタイリング */
 /* PC　3カラム */

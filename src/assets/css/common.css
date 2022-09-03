@@ -5,3 +5,34 @@
 #app {
   font-family: 'dotFont', sans-serif !important;
 }
+
+
+.button {
+  color: #2E2E2E;
+  text-decoration: none;
+  box-shadow: 4px 0 black,
+  -4px 0 black,
+  0 4px black,
+  0 -4px black,
+  inset -4px 0 gray,
+  inset 0 -4px gray;
+  padding: 0.5rem;
+}
+
+.button:active{
+  color: #2E2E2E;
+  box-shadow: 3px 0 black,
+  -3px 0 black,
+  0 3px black,
+  0 -3px black !important;
+ }
+
+.button:hover {
+  color: #2E2E2E;
+  box-shadow: 5px 0 black,
+  -5px 0 black,
+  0 5px black,
+  0 -5px black;
+  cursor:pointer;
+}
+

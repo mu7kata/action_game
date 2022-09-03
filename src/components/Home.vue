@@ -2,7 +2,7 @@
   <div id="app">
     <div class="gameTitle">
     <h1>格闘アクションゲーム（仮）</h1>
-    <router-link :to="`/select`">スタート</router-link>
+    <router-link class="button" :to="`/select`"><i class="bi bi-arrow-right me-2"></i>はじめる！</router-link>
     </div>
   </div>
 </template>
