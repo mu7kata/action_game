@@ -23,8 +23,8 @@ const mutations = {
     var selectPlayer =
       {
         'kaki': {   //HACK:数字で管理しない方がいいかも
-          attack: 20,
-          life: 2,
+          attack: 2,
+          life: 200,
           speed: 100,
           motionRange: 20,
           attackType:'shortDistance'

@@ -70,14 +70,17 @@ export default {
     this.player = this.$route.params.selectPlayerImgName;
     this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
     this.enemyAutoAction();
-    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
+    document.addEventListener('keydown', this.onKeyDown); //HACK
     this.e_x = 850;
     this.$store.commit("enemy/selectEnemy", this.$route.params.enemyNum);
     this.$store.commit("player/selectPlayer", this.$route.params.selectPlayerImgName);
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
+
   },
   beforeDestroy() {
+    document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
   },
   beforeRouteUpdate(to, from, next) {
@@ -191,7 +194,7 @@ export default {
         }
         , 4000
       );
-      document.addEventListener('keyup', this.onKeyUp);
+      document.addEventListener('keyup', this.resetStatus);
       this.playerStatus = 'gard';
     },
     deadMove() {
@@ -216,7 +219,13 @@ export default {
       //体力ゲージ消費処理
       this.playerAbility.life = this.playerAbility.life - this.enemyAbility.attack;
       const lifeBar = document.getElementsByClassName('player-life-bar');
-      lifeBar[0].style.width = this.playerAbility.life * 10 + "%"
+      let lessLife = this.playerAbility.life / this.maxPlayerLife * 100
+      if (lessLife < 0) {
+        // HACK:マイナスの値はなぜか反応しないため
+        lessLife = 0;
+      }
+      lifeBar[0].style.width = lessLife+"%"
+      // console.log(this.playerAbility.life * 10 + "%");
       this.damageMove();
       setTimeout(() => {
           this.p_x = this.p_x - 200;
@@ -352,6 +361,22 @@ export default {
         , 880
       );
     },
+    onKeyUp(event) {
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
+      this.keyCode = event.keyCode
+
+      const enter = 13;//TODO:追加アクションで設定する
+      const space = 32;
+
+      if (this.keyCode == space) {
+        this.attackMove();
+      }
+      if (this.keyCode == enter) {
+        this.strongAttackMove();
+      }
+    },
     onKeyDown(event) {
 
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
@@ -361,27 +386,21 @@ export default {
       const ArrowRight = 39;
       const ArrowLeft = 37;
       const ArrowDown = 40;
-      const enter = 13;//TODO:追加アクションで設定する
-      const space = 32;
+
       if (this.keyCode == ArrowRight) {
         this.rightMove();
       }
       if (this.keyCode == ArrowLeft) {
         this.leftMove();
       }
-      if (this.keyCode == space) {
-        this.attackMove();
-      }
-      if (this.keyCode == enter) {
-        this.strongAttackMove();
-      }
+
+      //ガードのみキーを下げたときに機能させたい
       if (this.keyCode == ArrowDown && this.playerStatus != 'gard') {
         this.gardMove();
       }
     },
-    onKeyUp() {
-
-      this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+    resetStatus() {
+      // this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
     },
     showGameResult() {
