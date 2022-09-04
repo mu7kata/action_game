@@ -99,14 +99,14 @@ export default {
         this.p_x = this.p_x - 10
         return;
       }
-      this.p_x = this.p_x + 50
+      this.p_x = this.p_x + this.playerAbility.motionRange;
     },
     leftMove() {
       //移動制限
       if (this.p_x < -100) {
         return;
       }
-      this.p_x = this.p_x - 50
+      this.p_x = this.p_x - this.playerAbility.motionRange;
     },
     attackMove() {
       this.playerImage = require(`@/assets/img/${this.player}_attack.gif`);
@@ -117,14 +117,21 @@ export default {
         }
         , 450
       );
+
+
+      // 遠距離タイプだった場合の処理
+      if (this.playerAbility.attackType == 'longDistance') {
+        setTimeout(() => {
+        this.enemyLifeDecrease();
+            // this.e_x = +550;
+          }
+          , 400
+        );
+      }
+
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
         this.enemyLifeDecrease();
-        setTimeout(() => {
-            // this.e_x = +550;
-          }
-          , 500
-        );
       }
     },
     damageMove() {
@@ -177,7 +184,7 @@ export default {
       //体力ゲージ消費処理
       this.playerAbility.life = this.playerAbility.life - this.enemyAbility.attack;
       const lifeBar = document.getElementsByClassName('player-life-bar');
-      lifeBar[0].style.width = this.playerAbility.life  * 10 + "%"
+      lifeBar[0].style.width = this.playerAbility.life * 10 + "%"
       this.damageMove();
       setTimeout(() => {
           this.p_x = this.p_x - 200;
@@ -345,7 +352,7 @@ export default {
     },
     showGameResult() {
       this.gameResult = true;
-      if (this.playerAbility.life<= 0) {
+      if (this.playerAbility.life <= 0) {
         this.matchEndMessage = 'lose'
       }
       if (this.enemyAbility.life <= 0) {
