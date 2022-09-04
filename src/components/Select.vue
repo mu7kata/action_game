@@ -44,7 +44,7 @@
     <div class="bl_media_container">
       <div class="bl_media_itemWrapper" v-for="player in playerList">
         <div class="button" @click="selectPlayerDisplayName = player.displayName">
-          <label>
+          <label class="cardArea">
             <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
             <input style="display: none" type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
           </label>
@@ -159,7 +159,6 @@ export default {
   -4px 0 black,
   0 4px black,
   0 -4px black;
-  width: 10%;
   /*!*transform: scale(-1, 1);*! 敵キャラで使えるかも*/
 }
 
@@ -179,8 +178,8 @@ h1 {
   margin: 1em;
 }
 
-label {
-  display: block;
+.cardArea {
+  display: block !important;
 }
 
 </style>
