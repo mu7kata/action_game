@@ -7,8 +7,6 @@
             <div class="player-life-bar"></div>
             <div class="life-mark"></div>
           </div>
-          <!-- TODO: 削除する-->
-          {{ this.$store.getters }}
           <div class="life-frame">
             <div class="enemy-life-bar"></div>
             <div class="life-mark"></div>
@@ -122,7 +120,7 @@ export default {
       // 遠距離タイプだった場合の処理
       if (this.playerAbility.attackType == 'longDistance') {
         setTimeout(() => {
-        this.enemyLifeDecrease();
+            this.enemyLifeDecrease(this.playerAbility.attack);
             // this.e_x = +550;
           }
           , 400
@@ -131,8 +129,42 @@ export default {
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
-        this.enemyLifeDecrease();
+        this.enemyLifeDecrease(this.playerAbility.attack);
       }
+    },
+    strongAttackMove() {
+      this.playerImage = require(`@/assets/img/${this.player}_s_attack.gif`);
+      this.playerStatus = 'attack';
+      setTimeout(() => {
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerStatus = '';
+        }
+        , 700
+      );
+
+      let beforePlayerLife = this.playerAbility.life;
+      // 遠距離タイプだった場合の処理
+      if (this.playerAbility.attackType == 'longDistance') {
+        setTimeout(() => {
+            //敵から攻撃を受けたら攻撃を中止する
+            if (beforePlayerLife != this.playerAbility.life) {
+              return
+            }
+            this.enemyLifeDecrease(this.playerAbility.attack * 1.5);//強攻撃は弱攻撃の1.5倍に。
+          }
+          , 1500
+        );
+        return;
+      }
+      //物体同士の衝突を検知したらダメージを減らす
+      if (this.isConflict()) {
+        setTimeout(() => {
+            this.enemyLifeDecrease(this.playerAbility.attack * 1.5);
+          }
+          , 700
+        )
+      }
+
     },
     damageMove() {
       this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
@@ -192,13 +224,12 @@ export default {
         , 300
       );
     },
-    enemyLifeDecrease() {
+    enemyLifeDecrease(damage) {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
-
       //体力ゲージ消費処理
-      this.$store.commit("enemy/changeLife", this.playerAbility.attack)
+      this.$store.commit("enemy/changeLife", damage)
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       let lessLife = Math.floor(this.enemyAbility.life / this.maxEnemyLife * 100)
       if (lessLife < 0) {
@@ -340,6 +371,9 @@ export default {
       }
       if (this.keyCode == space) {
         this.attackMove();
+      }
+      if (this.keyCode == enter) {
+        this.strongAttackMove();
       }
       if (this.keyCode == ArrowDown && this.playerStatus != 'gard') {
         this.gardMove();
