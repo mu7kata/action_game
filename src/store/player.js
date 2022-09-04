@@ -31,14 +31,14 @@ const mutations = {
         },
         'eda': {
           attack: 5,
-          life: 1,
+          life: 100,
           speed: 200,
           motionRange: 50,
           attackType:'shortDistance'
         },
         'haru': {
           attack: 5,
-          life: 1,
+          life: 100,
           speed: 200,
           motionRange: 100,
           attackType:'shortDistance'

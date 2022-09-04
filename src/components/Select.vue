@@ -102,6 +102,8 @@ export default {
   padding: 0;
 }
 
+
+
 .startButton {
   background-color: #00ffff;
   display: inline-block;
@@ -137,23 +139,6 @@ export default {
   margin: calc(30px / 2);
 }
 
-/*.bl_media_item {*/
-/*  outline: 1px solid #000;*/
-/*  background: #fff;*/
-/*  border-radius: 5px;*/
-/*  box-shadow: 0 0.05rem 0.2rem rgb(0 0 0 / 90%);*/
-/*}*/
-
-/*.bl_media_item:hover {*/
-/*  box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 90%);*/
-/*  transition: all .5s;*/
-/*  background-color: #dddddd;*/
-/*}*/
-
-.bl_media_item:active {
-  box-shadow: 0 0.05rem 0.2rem rgb(0 0 0 / 90%);
-}
-
 
 /* タブレット　2カラム */
 @media screen and (max-width: 1024px) {
@@ -175,6 +160,7 @@ export default {
   -4px 0 black,
   0 4px black,
   0 -4px black;
+  /*!*transform: scale(-1, 1);*! 敵キャラで使えるかも*/
 }
 
 .cardImg {

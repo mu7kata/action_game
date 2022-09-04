@@ -34,6 +34,11 @@
         </ul>
       </div>
     </div>
+    <div>
+      <a class="button p-2" href="/">
+        ホームへ戻る <i class="bi bi-house-door-fill"></i>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -103,6 +108,7 @@ export default {
       this.p_x = this.p_x + this.playerAbility.motionRange;
     },
     leftMove() {
+      console.log(this.p_x )
       //移動制限
       if (this.p_x < -100) {
         return;
@@ -228,6 +234,9 @@ export default {
       // console.log(this.playerAbility.life * 10 + "%");
       this.damageMove();
       setTimeout(() => {
+          if (this.p_x < -100) {
+            return;
+          }
           this.p_x = this.p_x - 200;
         }
         , 300
