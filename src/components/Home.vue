@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div class="gameTitle w-100">
-      <h1>格闘アクションゲーム（仮）</h1>
+      <h1 style="text-align: center;">格闘アクションゲーム（仮）</h1>
+      <p>test</p>
       <div class="mt-5">
         <router-link class="button" :to="`/select`"><i class="bi bi-cursor-fill me-2"></i>はじめる</router-link>
       </div>
