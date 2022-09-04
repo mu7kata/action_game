@@ -86,7 +86,6 @@ export default {
     this.$store.commit("player/selectPlayer", this.$route.params.selectPlayerImgName);
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
-
   },
   beforeDestroy() {
     document.removeEventListener('keyup', this.onKeyUp)
@@ -423,6 +422,14 @@ export default {
       const ArrowRight = 39;
       const ArrowLeft = 37;
       const ArrowDown = 40;
+
+      switch(this.keyCode) {
+        case 37: // ←
+        case 38: // ↑
+        case 39: // →
+        case 40: // ↓
+          event.preventDefault();
+      }
 
       if (this.keyCode == ArrowRight) {
         this.rightMove();

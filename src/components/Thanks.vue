@@ -2,11 +2,11 @@
   <div id="app">
     <div class="gameTitle w-100">
       <div v-if="this.$route.params.gameResult == 'clear'">
-        <h1>おめでとう！ゲームクリアです！</h1>
+        <h1 class="text-center">おめでとう！ゲームクリアです！</h1>
         <p>この度は遊んでいただきありがとうございました!<br>ゲームは今後アップデートする、、かもです。</p>
       </div>
       <div v-if="this.$route.params.gameResult == 'lose'">
-        <h1>残念・・、ゲームオーバーです</h1>
+        <h1 class="text-center">残念・・、ゲームオーバーです</h1>
         <p>再チャレンジお待ちしています</p>
       </div>
       <div class="mb-4">
@@ -31,5 +31,6 @@ export default {
   position: absolute;
   top: 25%;
 }
+
 
 </style>

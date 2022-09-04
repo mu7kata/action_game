@@ -155,11 +155,11 @@ export default {
 }
 
 .selectImg {
-  width: 10%;
   box-shadow: 4px 0 black,
   -4px 0 black,
   0 4px black,
   0 -4px black;
+  width: 10%;
   /*!*transform: scale(-1, 1);*! 敵キャラで使えるかも*/
 }
 
