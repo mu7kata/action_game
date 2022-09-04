@@ -2,9 +2,12 @@
   <div id="app">
     <div class="gameTitle w-100">
       <h1 style="text-align: center;">格闘アクションゲーム（仮）</h1>
-      <p>test</p>
       <div class="mt-5">
-        <router-link class="button" :to="`/select`"><i class="bi bi-cursor-fill me-2"></i>はじめる</router-link>
+        <router-link class="button p-3 m-2 w-25" :to="`/select`"><i class="bi bi-cursor-fill me-2"></i>　チャレンジモードではじめる　</router-link>
+      </div>
+      <div class="mt-5 ">
+        <p>↓ 近日公開</p>
+        <a class="button border-light p-3 m-2 w-25 text-secondary bg-light bg"><i class="bi bi-cursor-fill me-2"></i>フリーたいせんモードではじめる</a>
       </div>
     </div>
   </div>

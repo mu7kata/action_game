@@ -25,7 +25,7 @@
     </div>
     <div class="mt-5 fs-4 m-auto" style="width:14%">
       <div class="m-auto w-100">
-        <h3 class="text-start">操作方法（コマンド一覧)</h3>
+        <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
           <li>弱こうげき ： スペースキー</li>
           <li>強こうげき ： エンターキー</li>
@@ -385,7 +385,11 @@ export default {
         return;
       }
       this.keyCode = event.keyCode
-
+      switch(this.keyCode) {
+        case 13:
+        case 32:
+          event.preventDefault();
+      }
       if (this.keyCode == this.spaceKey) {
         this.attackCount = this.attackCount + 1;
         if (this.attackCount == 8) {

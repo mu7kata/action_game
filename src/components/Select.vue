@@ -9,9 +9,9 @@
     <div class="mt-3 fs-4 m-auto" style="width:14%">
       <details class="text-start">
         <summary @click="openAccordion">
-          <i :class="accordionButtonClass"></i> 操作方法（コマンド一覧)
+          <i :class="accordionButtonClass"></i> 操作方法(コマンド)
         </summary>
-        <p class="fs-6">※バトル中の画面にも表示されます</p>
+
         <div class="m-auto w-100">
           <ul class="text-start">
             <li>弱こうげき ： スペースキー</li>
@@ -29,7 +29,7 @@
         </button>
       </div>
       <div v-if="selectStatus" class="startArea w-25 m-auto">
-        <p class="mb-2 pt-2 fs-4">5かい "かち" でゲームクリア</p>
+        <p class="mb-2 pt-2 fs-4">3かい "かち" でゲームクリア</p>
         <div>
         <router-link class="button startButton mb-2 fs-3" :to="`battle/${selectPlayerImgName}/1`">
           バトルスタート <i class="bi bi-arrow-right ms-2"></i>
@@ -61,13 +61,13 @@ export default {
   components: {},
   data() {
     return {
-      selectPlayerImgName: 'kaki',
-      selectPlayerDisplayName: 'かき',
+      selectPlayerImgName: 'haru',
+      selectPlayerDisplayName: 'はるか',
       playerList: [
-        {imgName: 'kaki', displayName: 'かき'},
-        {imgName: 'kuni', displayName: 'くに'},
-        {imgName: 'eda', displayName: 'えだ'},
-        {imgName: 'haru', displayName: 'はる'},
+        {imgName: 'haru', displayName: 'はるか'},
+        {imgName: 'kaki', displayName: 'カッキー'},
+        {imgName: 'eda', displayName: 'えだまつ'},
+        {imgName: 'kuni', displayName: 'くにあき'},
       ],
       selectStatus: false,
       accordionButtonClass: "bi bi-caret-right-fill me-2"
