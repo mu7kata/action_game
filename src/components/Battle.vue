@@ -60,7 +60,7 @@ export default {
       e_x: 200,//敵キャラの位置（横）
       e_y: 0,//敵キャラの位置（縦）
       playerImage: '',
-      enemyImage: require('@/assets/img/enamy_1_stand.gif'),
+      enemyImage: '',
       keyCode: null,
       playerStatus: '',
       enemyStatus: '',
@@ -74,6 +74,7 @@ export default {
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
     this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+    this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown); //HACK
@@ -108,7 +109,7 @@ export default {
       this.p_x = this.p_x + this.playerAbility.motionRange;
     },
     leftMove() {
-      console.log(this.p_x )
+      console.log(this.p_x)
       //移動制限
       if (this.p_x < -100) {
         return;
@@ -144,16 +145,17 @@ export default {
     strongAttackMove() {
       this.playerImage = require(`@/assets/img/${this.player}_s_attack.gif`);
       this.playerStatus = 'attack';
-      setTimeout(() => {
-          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
-          this.playerStatus = '';
-        }
-        , 700
-      );
 
-      let beforePlayerLife = this.playerAbility.life;
       // 遠距離タイプだった場合の処理
       if (this.playerAbility.attackType == 'longDistance') {
+        setTimeout(() => {
+            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+            this.playerStatus = '';
+          }
+          , 1500
+        );
+
+        let beforePlayerLife = this.playerAbility.life;
         setTimeout(() => {
             //敵から攻撃を受けたら攻撃を中止する
             if (beforePlayerLife != this.playerAbility.life) {
@@ -165,8 +167,16 @@ export default {
         );
         return;
       }
+      setTimeout(() => {
+          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerStatus = '';
+        }
+        , 700
+      );
+
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
+        console.log(2)
         setTimeout(() => {
             this.enemyLifeDecrease(this.playerAbility.attack * 1.5);
           }
@@ -230,7 +240,7 @@ export default {
         // HACK:マイナスの値はなぜか反応しないため
         lessLife = 0;
       }
-      lifeBar[0].style.width = lessLife+"%"
+      lifeBar[0].style.width = lessLife + "%"
       // console.log(this.playerAbility.life * 10 + "%");
       this.damageMove();
       setTimeout(() => {
@@ -280,10 +290,11 @@ export default {
       return false
     },
     enemyDeadMove() {
-      this.enemyImage = require('@/assets/img/enamy_1_dead.gif');
+      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_dead.gif`);
 
       setTimeout(() => {
-          this.enemyImage = require('@/assets/img/enamy_1_deading.gif');
+
+          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_deading.gif`);
         }
         , 250
       );
@@ -347,10 +358,10 @@ export default {
       return num;
     },
     enemyAttackMove() {
-      this.enemyImage = require('@/assets/img/enamy_1_attack.gif');
+      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_attack.gif`);
 
       setTimeout(() => {
-          this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
+          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
         }
         , 880
       );
@@ -361,13 +372,13 @@ export default {
       }
     },
     enemyDamageMove() {
-      this.enemyImage = require('@/assets/img/enamy_1_damege.gif');
+      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_damege.gif`);
       this.enemyStatus = 'damage';
       setTimeout(() => {
-          this.enemyImage = require('@/assets/img/enamy_1_stand.gif');
+          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
           this.enemyStatus = '';
         }
-        , 880
+        , 800
       );
     },
     onKeyUp(event) {
@@ -439,7 +450,7 @@ export default {
   width: 10px;
 }
 
-.player > .object {
+.player > .object, .enemy > .object {
   width: 300px;
   height: 200px;
 }
@@ -471,12 +482,6 @@ export default {
   /* 交差軸：上下の配置 */
   align-items: flex-end;
 }
-
-.enemy > .object {
-  width: 200px;
-  height: 200px;
-}
-
 
 /**
 体力ゲージ
