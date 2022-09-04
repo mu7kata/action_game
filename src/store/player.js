@@ -23,22 +23,22 @@ const mutations = {
     var selectPlayer =
       {
         'kaki': {   //HACK:数字で管理しない方がいいかも
-          attack: 2,
-          life: 200,
+          attack: 25,
+          life: 300,
           speed: 100,
           motionRange: 20,
           attackType:'shortDistance'
         },
         'eda': {
-          attack: 5,
-          life: 100,
+          attack: 10,
+          life: 250,
           speed: 200,
-          motionRange: 50,
+          motionRange: 150,
           attackType:'shortDistance'
         },
         'haru': {
-          attack: 5,
-          life: 100,
+          attack: 15,
+          life: 200,
           speed: 200,
           motionRange: 100,
           attackType:'shortDistance'
@@ -47,7 +47,7 @@ const mutations = {
           attack: 5,
           life: 100,
           speed: 200,
-          motionRange: 50,
+          motionRange: 100,
           attackType:'longDistance'
         }
       }

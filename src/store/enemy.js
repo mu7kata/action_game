@@ -21,22 +21,22 @@ const mutations = {
     var selectEnemy =
       {
         1: {   //HACK:数字で管理しない方がいいかも
-          attack: 1,
-          life: 30,
-          speed: 100,
+          attack: 5,
+          life: 50,
+          speed: 150,
           motionRange: 100
         },
         2: {
-          attack: 5,
-          life: 1,
-          speed: 200,
+          attack: 20,
+          life: 100,
+          speed: 180,
           motionRange: 100
         }    ,
         3: {
-          attack: 5,
-          life: 1,
-          speed: 200,
-          motionRange: 100
+          attack: 50,
+          life: 170,
+          speed: 100,
+          motionRange: 200
         }
       }
     ;

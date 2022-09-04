@@ -69,7 +69,10 @@ export default {
       enemyAbility: this.$store.getters['enemy/status'],
       playerAbility: this.$store.getters['player/status'],
       maxEnemyLife: '',//HACK:
-      maxPlayerLife: '' //HACK:
+      maxPlayerLife: '', //HACK:
+      enterKey: 13,
+      spaceKey: 32,
+      attackCount: 0
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -109,7 +112,6 @@ export default {
       this.p_x = this.p_x + this.playerAbility.motionRange;
     },
     leftMove() {
-      console.log(this.p_x)
       //移動制限
       if (this.p_x < -100) {
         return;
@@ -176,7 +178,6 @@ export default {
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
-        console.log(2)
         setTimeout(() => {
             this.enemyLifeDecrease(this.playerAbility.attack * 1.5);
           }
@@ -241,10 +242,9 @@ export default {
         lessLife = 0;
       }
       lifeBar[0].style.width = lessLife + "%"
-      // console.log(this.playerAbility.life * 10 + "%");
       this.damageMove();
       setTimeout(() => {
-          if (this.p_x < -100) {
+          if (this.p_x < -250) {
             return;
           }
           this.p_x = this.p_x - 200;
@@ -284,7 +284,7 @@ export default {
       const playerDom = this.$refs.player;
       const playerRect = playerDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
-      if ((enemyRect.right - playerRect.right) < 200) {
+      if ((enemyRect.right - playerRect.right) < 300) {
         return true;
       }
       return false
@@ -387,14 +387,31 @@ export default {
       }
       this.keyCode = event.keyCode
 
-      const enter = 13;//TODO:追加アクションで設定する
-      const space = 32;
+      if (this.keyCode == this.spaceKey) {
+        this.attackCount = this.attackCount + 1;
+        if (this.attackCount == 8) {
+        this.spaceKey = '';
+        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+          setTimeout(() => {
+              this.attackCount = 0;
+              this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+              this.spaceKey = 32;
+            }
+            , 2000
+          );
+          return;
+        }
 
-      if (this.keyCode == space) {
         this.attackMove();
       }
-      if (this.keyCode == enter) {
+      if (this.keyCode == this.enterKey) {
+        this.enterKey = '';
         this.strongAttackMove();
+        setTimeout(() => {
+            this.enterKey = 13;
+          }
+          , 2000
+        );
       }
     },
     onKeyDown(event) {
@@ -431,7 +448,7 @@ export default {
       if (this.enemyAbility.life <= 0) {
         this.matchEndMessage = 'win'
 
-        if (this.$route.params.enemyNum == 2) {
+        if (this.$route.params.enemyNum == 3) {
           this.matchEndMessage = 'clear'
         }
       }
