@@ -44,8 +44,8 @@ const mutations = {
           attackType:'shortDistance'
         },
         'kuni': {
-          attack: 5,
-          life: 100,
+          attack: 7.5,
+          life: 120,
           speed: 200,
           motionRange: 100,
           attackType:'longDistance'

@@ -30,7 +30,7 @@ const mutations = {
           attack: 20,
           life: 100,
           speed: 180,
-          motionRange: 100
+          motionRange: 120
         }    ,
         3: {
           attack: 50,
