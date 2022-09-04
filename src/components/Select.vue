@@ -6,22 +6,7 @@
       <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
 
-    <div class="mt-3 fs-4 m-auto" style="width:14%">
-      <details class="text-start">
-        <summary @click="openAccordion">
-          <i :class="accordionButtonClass"></i> 操作方法(コマンド)
-        </summary>
 
-        <div class="m-auto w-100">
-          <ul class="text-start">
-            <li>弱こうげき ： スペースキー</li>
-            <li>強こうげき ： エンターキー</li>
-            <li>ガード ： ↓ キー</li>
-            <li>いどう ： ← → キー</li>
-          </ul>
-        </div>
-      </details>
-    </div>
     <div class="mt-3">
       <div v-if="!selectStatus">
         <button class="button bg-light p-2 fs-4" @click="confirmChara">
@@ -37,6 +22,25 @@
         </div>
       <div v-if="selectStatus"><a  class="reSelectButton pt-4" @click="confirmChara">　<i class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす</a></div>
       </div>
+    </div>
+    <div class=" mt-5 fs-4 m-auto " style="width: 45%;">
+      <details class="text-start">
+        <summary @click="openAccordion">
+          <i :class="accordionButtonClass"></i> 操作方法(コマンド)
+        </summary>
+
+        <div class="m-auto w-100">
+          <ul class="text-start">
+            <li>弱こうげき ： スペースキー</li>
+            <li>強こうげき ： エンターキー</li>
+            <li>ガード ： ↓ キー</li>
+            <li>いどう ： ← → キー</li>
+            <li>● そのた</li>
+            <li>・えんきょりタイプときんきょりタイプがいます</li>
+            <li>・れんぞくしてこうげきするとつかれます</li>
+          </ul>
+        </div>
+      </details>
     </div>
     <div class="w-50 m-auto text-start pt-5 fs-3">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>

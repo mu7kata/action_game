@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-5 fs-4 m-auto" style="width:14%">
+    <div class="mt-5 fs-4 m-auto" style="width:45%">
       <div class="m-auto w-100">
         <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
@@ -31,6 +31,9 @@
           <li>強こうげき ： エンターキー</li>
           <li>ガード ： ↓ キー</li>
           <li>いどう ： ← → キー</li>
+          <li>● そのた</li>
+          <li>・えんきょりタイプときんきょりタイプがいます</li>
+          <li>・れんぞくしてこうげきするとつかれます</li>
         </ul>
       </div>
     </div>
@@ -428,6 +431,8 @@ export default {
       const ArrowDown = 40;
 
       switch(this.keyCode) {
+        case 13:
+        case 32:
         case 37: // ←
         case 38: // ↑
         case 39: // →
