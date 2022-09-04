@@ -58,15 +58,15 @@ export default {
       e_y: 0,//敵キャラの位置（縦）
       playerImage: '',
       enemyImage: require('@/assets/img/enamy_1_stand.gif'),
-      p_life: 10,
-      e_life: 10,
       keyCode: null,
       playerStatus: '',
       enemyStatus: '',
       matchEndMessage: "",
       gameResult: false,
-      enemy: this.$store.getters,
-      maxEnemyLife: '' //HACK:
+      enemyAbility: this.$store.getters['enemy/status'],
+      playerAbility: this.$store.getters['player/status'],
+      maxEnemyLife: '',//HACK:
+      maxPlayerLife: '' //HACK:
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
@@ -74,8 +74,10 @@ export default {
     this.enemyAutoAction();
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
-    this.$store.commit("selectEnemy", this.$route.params.enemyNum);
-    this.maxEnemyLife = this.enemy.life;
+    this.$store.commit("enemy/selectEnemy", this.$route.params.enemyNum);
+    this.$store.commit("player/selectPlayer", this.$route.params.selectPlayerImgName);
+    this.maxEnemyLife = this.enemyAbility.life;
+    this.maxPlayerLife = this.playerAbility.life;
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.onKeyDown)
@@ -117,7 +119,7 @@ export default {
       );
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
-        this.e_life_decrease();
+        this.enemyLifeDecrease();
         setTimeout(() => {
             // this.e_x = +550;
           }
@@ -128,7 +130,7 @@ export default {
     damageMove() {
       this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
       this.playerStatus = 'damage';
-      if (this.p_life <= 0) {
+      if (this.playerAbility.life <= 0) {
         this.deadMove();
         return;
       }
@@ -158,12 +160,11 @@ export default {
       this.playerStatus = 'dead';
       this.showGameResult();
     },
-    p_life_decrease() {
+    playerLifeDecrease() {
       if (this.playerStatus == 'gard') {
         this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
         setTimeout(() => {
             this.p_x = this.p_x - 150;
-
           }
           , 300
         );
@@ -174,9 +175,9 @@ export default {
         return;
       }
       //体力ゲージ消費処理
-      this.p_life = this.p_life - this.enemy.attack;
+      this.playerAbility.life = this.playerAbility.life - this.enemyAbility.attack;
       const lifeBar = document.getElementsByClassName('player-life-bar');
-      lifeBar[0].style.width = this.p_life * 10 + "%"
+      lifeBar[0].style.width = this.playerAbility.life  * 10 + "%"
       this.damageMove();
       setTimeout(() => {
           this.p_x = this.p_x - 200;
@@ -184,15 +185,21 @@ export default {
         , 300
       );
     },
-    e_life_decrease() {
+    enemyLifeDecrease() {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
 
       //体力ゲージ消費処理
-      this.$store.commit("changeLife", 1)
+      this.$store.commit("enemy/changeLife", this.playerAbility.attack)
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
-      lifeBar[0].style.width = this.enemy.life / this.maxEnemyLife * 100 + "%";
+      let lessLife = Math.floor(this.enemyAbility.life / this.maxEnemyLife * 100)
+      if (lessLife < 0) {
+        // HACK:マイナスの値はなぜか反応しないため
+        lessLife = 0;
+      }
+      lifeBar[0].style.width = lessLife + "%";
+
       this.enemyDamageMove();
 
       setTimeout(() => {
@@ -232,7 +239,7 @@ export default {
       setTimeout(() => {
           this.enemyAutoAction()
         }
-        , this.enemy.speed
+        , this.enemyAbility.speed
       );
     },
     enemyMove() {
@@ -246,11 +253,11 @@ export default {
         return;
       }
       //死亡アクション
-      if (this.enemy.life <= 0) {
+      if (this.enemyAbility.life <= 0) {
         this.enemyDeadMove();
         return;
       }
-      let x_num = this.getRandom(this.enemy.motionRange);
+      let x_num = this.getRandom(this.enemyAbility.motionRange);
       if (this.isConflict()) {
         //攻撃をランダムに実行
         if ((this.e_x % 3) == 0 && this.e_x != 0) {
@@ -294,7 +301,7 @@ export default {
 
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
-        this.p_life_decrease();
+        this.playerLifeDecrease();
       }
     },
     enemyDamageMove() {
@@ -338,10 +345,10 @@ export default {
     },
     showGameResult() {
       this.gameResult = true;
-      if (this.p_life <= 0) {
+      if (this.playerAbility.life<= 0) {
         this.matchEndMessage = 'lose'
       }
-      if (this.enemy.life <= 0) {
+      if (this.enemyAbility.life <= 0) {
         this.matchEndMessage = 'win'
 
         if (this.$route.params.enemyNum == 2) {
