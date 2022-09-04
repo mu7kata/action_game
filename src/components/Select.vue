@@ -159,6 +159,7 @@ export default {
   -4px 0 black,
   0 4px black,
   0 -4px black;
+  width: 10% !important;
   /*!*transform: scale(-1, 1);*! 敵キャラで使えるかも*/
 }
 

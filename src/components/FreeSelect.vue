@@ -162,14 +162,6 @@ export default {
   }
 }
 
-.selectImg {
-  width: 50%;
-  box-shadow: 4px 0 black,
-  -4px 0 black,
-  0 4px black,
-  0 -4px black;
-  /*!*transform: scale(-1, 1);*! 敵キャラで使えるかも*/
-}
 
 .cardImg {
   width: 100%;
