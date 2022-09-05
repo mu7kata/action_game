@@ -10,7 +10,18 @@
         <p>再チャレンジお待ちしています</p>
       </div>
       <div class="mb-4">
-        <img class="object" ref="player" :src="require('@/assets/img/enamy_1_stand.gif')">
+
+      </div>
+      <div class="row m-auto w-50 mb-4">
+        <div class="col-sm-4">
+          <img class="object" ref="player" :src="require('@/assets/img/enamy_1_stand.gif')">
+        </div>
+        <div class="col-sm-4">
+          <img class="object" ref="player" :src="require('@/assets/img/enamy_3_stand.gif')">
+        </div>
+        <div class="col-sm-4">
+          <img class="object" ref="player" :src="require('@/assets/img/enamy_2_stand.gif')">
+        </div>
       </div>
       <div>
         <a class="button p-2" href="/">
