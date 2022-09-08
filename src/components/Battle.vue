@@ -66,6 +66,7 @@ export default {
       enemyImage: '',
       keyCode: null,
       playerStatus: '',
+      wakeUpFlg: false,
       enemyStatus: '',
       matchEndMessage: "",
       gameResult: false,
@@ -143,6 +144,9 @@ export default {
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
+        if (this.wakeUpFlg == true) {
+          this.playerAbility.attack = this.playerAbility.attack * 1.75;
+        }
         this.enemyLifeDecrease(this.playerAbility.attack);
       }
     },
@@ -188,6 +192,27 @@ export default {
       }
 
     },
+    wakeUpMove() {
+
+      if (this.wakeUpFlg == false && this.player =='eda') { //TODO：一旦枝まつのみ
+        this.wakeUpFlg = true;
+        this.playerImage = require(`@/assets/img/${this.player}_awake.gif`);
+        setTimeout(() => {
+            this.player = this.player + '_w';
+            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          }
+          , 1000
+        );
+        setTimeout(() => {
+
+        this.player = this.player.replace("_w", "");
+            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+            this.wakeUpFlg = 'used';
+          }
+          , 6000
+        );
+      }
+    },
     damageMove() {
       this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
       this.playerStatus = 'damage';
@@ -222,7 +247,7 @@ export default {
       this.showGameResult();
     },
     playerLifeDecrease() {
-      if (this.playerStatus == 'gard') {
+      if (this.playerStatus == 'gard' || this.wakeUpFlg == true) {
         this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
         setTimeout(() => {
             this.p_x = this.p_x - 150;
@@ -388,7 +413,7 @@ export default {
         return;
       }
       this.keyCode = event.keyCode
-      switch(this.keyCode) {
+      switch (this.keyCode) {
         case 13:
         case 32:
           event.preventDefault();
@@ -396,8 +421,8 @@ export default {
       if (this.keyCode == this.spaceKey) {
         this.attackCount = this.attackCount + 1;
         if (this.attackCount == 8) {
-        this.spaceKey = '';
-        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+          this.spaceKey = '';
+          this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
           setTimeout(() => {
               this.attackCount = 0;
               this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
@@ -429,8 +454,9 @@ export default {
       const ArrowRight = 39;
       const ArrowLeft = 37;
       const ArrowDown = 40;
+      const ArrowUp = 38;
 
-      switch(this.keyCode) {
+      switch (this.keyCode) {
         case 13:
         case 32:
         case 37: // ←
@@ -445,6 +471,10 @@ export default {
       }
       if (this.keyCode == ArrowLeft) {
         this.leftMove();
+      }
+
+      if (this.keyCode == ArrowUp) {
+        this.wakeUpMove();
       }
 
       //ガードのみキーを下げたときに機能させたい
