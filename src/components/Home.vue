@@ -24,6 +24,13 @@
         <p>↓ 近日公開</p>
         <a class="button border-light p-3 m-2 w-25 text-secondary bg-light bg"><i class="bi bi-cursor-fill me-2"></i>フリーたいせんモードではじめる</a>
       </div>
+    <div class="mt-5 m-auto w-75">
+      <h3>更新情報</h3>
+      <div class="text-start w-25 m-auto mt-2">
+      <p class="m-0">【2022.09.10】  "えだまつ"に覚醒モードが追加されました</p>
+      <p class="m-0">【2022.09.05】  ベータ版リリースしました</p>
+      </div>
+    </div>
     </div>
   </div>
 </template>

@@ -31,6 +31,7 @@
           <li>強こうげき ： エンターキー</li>
           <li>ガード ： ↓ キー</li>
           <li>いどう ： ← → キー</li>
+          <li>覚醒モード ： ↑ キー</li>
           <li>● そのた</li>
           <li>・えんきょりタイプときんきょりタイプがいます</li>
           <li>・れんぞくしてこうげきするとつかれます</li>
@@ -103,6 +104,7 @@ export default {
   },
   methods: {
     rightMove() {
+      this.attackCount = 0;
       //移動制限
       if (this.p_x == 1150) {
         return;
@@ -115,6 +117,7 @@ export default {
       this.p_x = this.p_x + this.playerAbility.motionRange;
     },
     leftMove() {
+      this.attackCount = 0;
       //移動制限
       if (this.p_x < -100) {
         return;
@@ -151,6 +154,7 @@ export default {
       }
     },
     strongAttackMove() {
+      this.attackCount = 0;
       this.playerImage = require(`@/assets/img/${this.player}_s_attack.gif`);
       this.playerStatus = 'attack';
 
@@ -209,11 +213,12 @@ export default {
             this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
             this.wakeUpFlg = 'used';
           }
-          , 6000
+          , 7000
         );
       }
     },
     damageMove() {
+      this.attackCount = 0;
       this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
       this.playerStatus = 'damage';
       if (this.playerAbility.life <= 0) {
@@ -231,7 +236,7 @@ export default {
     },
     gardMove() {
       this.playerImage = require(`@/assets/img/${this.player}_gard.gif`);
-
+      this.attackCount = 0;
       setTimeout(() => {
           this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
           this.playerStatus = '';
@@ -271,7 +276,7 @@ export default {
       lifeBar[0].style.width = lessLife + "%"
       this.damageMove();
       setTimeout(() => {
-          if (this.p_x < -250) {
+          if (this.p_x < - 250) {
             return;
           }
           this.p_x = this.p_x - 200;
@@ -280,6 +285,7 @@ export default {
       );
     },
     enemyLifeDecrease(damage) {
+      console.log(damage);
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
