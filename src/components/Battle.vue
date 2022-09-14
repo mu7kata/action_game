@@ -27,11 +27,11 @@
       <div class="m-auto w-100">
         <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
-          <li>弱こうげき ： スペースキー</li>
+          <li>弱こうげき ： スペースキー ※ れんぞくでこうげきしすぎるとうごけなくなります</li>
           <li>強こうげき ： エンターキー</li>
           <li>ガード ： ↓ キー</li>
           <li>いどう ： ← → キー</li>
-          <li>覚醒モード ： ↑ キー</li>
+          <li v-if="player === 'eda'">覚醒モード ： ↑ キー (5秒間 のうりょく値がすごくあがります) ※ 一度のみ使用可能</li>
           <li>● そのた</li>
           <li>・えんきょりタイプときんきょりタイプがいます</li>
           <li>・れんぞくしてこうげきするとつかれます</li>
@@ -104,7 +104,6 @@ export default {
   },
   methods: {
     rightMove() {
-      this.attackCount = 0;
       //移動制限
       if (this.p_x == 1150) {
         return;
@@ -125,6 +124,9 @@ export default {
       this.p_x = this.p_x - this.playerAbility.motionRange;
     },
     attackMove() {
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
       this.playerImage = require(`@/assets/img/${this.player}_attack.gif`);
       this.playerStatus = 'attack';
       setTimeout(() => {
@@ -147,13 +149,17 @@ export default {
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
+        let damage = this.playerAbility.attack
         if (this.wakeUpFlg == true) {
-          this.playerAbility.attack = this.playerAbility.attack * 1.75;
+          damage = this.playerAbility.w_attack;
         }
-        this.enemyLifeDecrease(this.playerAbility.attack);
+        this.enemyLifeDecrease(damage);
       }
     },
     strongAttackMove() {
+      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        return;
+      }
       this.attackCount = 0;
       this.playerImage = require(`@/assets/img/${this.player}_s_attack.gif`);
       this.playerStatus = 'attack';
@@ -171,7 +177,9 @@ export default {
         setTimeout(() => {
             //敵から攻撃を受けたら攻撃を中止する
             if (beforePlayerLife != this.playerAbility.life) {
-              return
+              if (this.wakeUpFlg != true) {
+                return
+              }
             }
             this.enemyLifeDecrease(this.playerAbility.attack * 1.5);//強攻撃は弱攻撃の1.5倍に。
           }
@@ -189,16 +197,20 @@ export default {
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
         setTimeout(() => {
-            this.enemyLifeDecrease(this.playerAbility.attack * 1.5);
+            let damage = this.playerAbility.attack
+            if (this.wakeUpFlg == true) {
+              damage = this.playerAbility.w_attack;
+            }
+            this.enemyLifeDecrease(damage * 1.5);
           }
-          , 700
+          , 600
         )
       }
 
     },
     wakeUpMove() {
 
-      if (this.wakeUpFlg == false && this.player =='eda') { //TODO：一旦枝まつのみ
+      if (this.wakeUpFlg == false && this.player == 'eda') { //TODO：一旦枝まつのみ
         this.wakeUpFlg = true;
         this.playerImage = require(`@/assets/img/${this.player}_awake.gif`);
         setTimeout(() => {
@@ -209,7 +221,7 @@ export default {
         );
         setTimeout(() => {
 
-        this.player = this.player.replace("_w", "");
+            this.player = this.player.replace("_w", "");
             this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
             this.wakeUpFlg = 'used';
           }
@@ -276,7 +288,7 @@ export default {
       lifeBar[0].style.width = lessLife + "%"
       this.damageMove();
       setTimeout(() => {
-          if (this.p_x < - 250) {
+          if (this.p_x < -250) {
             return;
           }
           this.p_x = this.p_x - 200;
@@ -285,7 +297,6 @@ export default {
       );
     },
     enemyLifeDecrease(damage) {
-      console.log(damage);
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
@@ -415,45 +426,50 @@ export default {
       );
     },
     onKeyUp(event) {
+      // console.log(this.playerStatus)
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
         return;
       }
+
       this.keyCode = event.keyCode
       switch (this.keyCode) {
         case 13:
         case 32:
+        case 38: // ↑
           event.preventDefault();
       }
-      if (this.keyCode == this.spaceKey) {
+
+      if (this.keyCode === 32) {
         this.attackCount = this.attackCount + 1;
-        if (this.attackCount == 8) {
-          this.spaceKey = '';
+        if (this.attackCount > 7) {
           this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+          this.playerStatus = 'damage';
           setTimeout(() => {
+              this.resetStatus()
               this.attackCount = 0;
-              this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
-              this.spaceKey = 32;
+              // this.spaceKey = 32;
             }
             , 2000
           );
           return;
         }
-
         this.attackMove();
       }
+
       if (this.keyCode == this.enterKey) {
         this.enterKey = '';
         this.strongAttackMove();
         setTimeout(() => {
             this.enterKey = 13;
           }
-          , 2000
+          , 1300
         );
       }
     },
     onKeyDown(event) {
-
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
         return;
       }
       this.keyCode = event.keyCode
@@ -489,7 +505,7 @@ export default {
       }
     },
     resetStatus() {
-      // this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+      this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
       this.playerStatus = '';
     },
     showGameResult() {

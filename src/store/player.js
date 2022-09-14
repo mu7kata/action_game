@@ -1,6 +1,7 @@
 const state = {
   status: {
-    attack: 20,
+    attack: 15,
+    w_attack: 20,
     life: 20,
     speed: 300, //値が小さければ小さいほどいい。行動の間隔
     motionRange: 50,
@@ -31,6 +32,7 @@ const mutations = {
         },
         'eda': {
           attack: 10,
+          w_attack: 17.5,
           life: 250,
           speed: 200,
           motionRange: 150,
@@ -53,6 +55,7 @@ const mutations = {
       }
     ;
     state.status.attack = selectPlayer[value].attack
+    state.status.w_attack = selectPlayer[value].w_attack
     state.status.life = selectPlayer[value].life
     state.status.speed = selectPlayer[value].speed
     state.status.motionRange = selectPlayer[value].motionRange
