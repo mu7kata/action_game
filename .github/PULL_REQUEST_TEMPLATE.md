@@ -6,10 +6,10 @@
 
 
 ### 本番
-[トップページ（/）](https://www.kekkon-ouen.net/)
+* トップページ：[（/）](https://www.kekkon-ouen.net/)
 
 ### 個人の開発環境、テスト環境環境
-[トップページ（/）](https://{自分のアカウント名}.kekkon-ouen.dev.pathcreate.com/)
+* トップページ：[（/）](https://{自分のアカウント名}.kekkon-ouen.dev.pathcreate.com/)
 
 
 ## 概要 [<img src="https://is.gd/JFEIxR" width="14">](https://is.gd/TdR4rW)
@@ -32,7 +32,7 @@
 ## UIに対する変更 [<img src="https://is.gd/JFEIxR" width="14">](https://is.gd/gYhDbL)
 ### 変更後のスクリーンショット
 <details>
-<summary>// 中身のタイトル</summary>
+<summary>📌 // 中身のタイトル</summary>
 
 //ここから画像を貼り付ける（上のスペースは必須）
 </details>
