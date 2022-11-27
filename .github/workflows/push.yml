@@ -1,0 +1,6 @@
+on: push
+jobs:
+  add_text:
+    runs-on: ubuntu-latest
+    steps:
+    run: echo "Hello GitHub Actions!";
