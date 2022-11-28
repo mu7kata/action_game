@@ -1,6 +1,14 @@
-on: push
+name: Action Sample
+
+on:
+  push:
+    branches: 
+      - master
+  workflow_dispatch:
+
 jobs:
-  add_text:
+  print-hello-world:
     runs-on: ubuntu-latest
     steps:
-    run: echo "Hello GitHub Actions!";
+      - name: execute echo command
+        run: echo "Hello World!"
