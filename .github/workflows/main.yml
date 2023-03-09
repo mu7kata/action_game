@@ -23,9 +23,8 @@ jobs:
         with:
           issue-number: ${{github.event.pull_request.number}}
           body: "作業が承認されました！🎉
----
-
-* 慎重に  `Merge pull reguest ▼` を実行してください`
-* Merge後、[ステージング環境](https://qiita.com/okazy/items/7ab46f2c20ec341a2836)での動作確認してください
-* 動作確認が問題なければ[本番化用のプルリクエスト](https://github.com/mu7kata/action_game/pull/9)を作成し本番化してください
+          ---
+          * 慎重に  `Merge pull reguest ▼` を実行してください`
+          * Merge後、[ステージング環境](https://qiita.com/okazy/items/7ab46f2c20ec341a2836)での動作確認してください
+          * 動作確認が問題なければ[本番化用のプルリクエスト](https://github.com/mu7kata/action_game/pull/9)を作成し本番化してください
           "
