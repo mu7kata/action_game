@@ -1,25 +1,10 @@
-# action-geme
-
-> A Vue.js project
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## 格闘アクションゲーム
+URL：http://webhosting-adtion-game.s3-website-ap-northeast-1.amazonaws.com/#/
+<img src="https://drive.google.com/file/d/1McboK1AnLwF-AO4D-ixvi2r59cgLLgFd/view?usp=sharing">
 
 
-http://webhosting-adtion-game.s3-website-ap-northeast-1.amazonaws.com/#/
-
+## システム構成
+Bootstrap：5.2.0<br>
+Vue.js: 2.5.2<br>
+Vue-router: 3.0.1<br>
+Vuex: 3.0.1<br>
