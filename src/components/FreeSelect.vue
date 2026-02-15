@@ -6,13 +6,13 @@
       <div class="col-sm-6">
         <h3>選択中：{{ selectPlayerDisplayName }}</h3>
         <div class=" ">
-          <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
+          <img class="selectImg" :src="getImageUrl(`${selectPlayerImgName}_stand.gif`)" alt="">
         </div>
       </div>
       <div class="col-sm-6">
         <h3>選択中：{{ selectEnemyDisplayName }}</h3>
         <div class=" ">
-          <img class="selectImg" :src="require(`@/assets/img/${selectEnemyImgName}_stand.gif`)" alt="">
+          <img class="selectImg" :src="getImageUrl(`${selectEnemyImgName}_stand.gif`)" alt="">
         </div>
       </div>
     </div>
@@ -36,22 +36,24 @@
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>
     <div class="bl_media_container col-sm-6">
-      <div class="bl_media_itemWrapper" v-for="player in playerList">
+      <div class="bl_media_itemWrapper" v-for="player in playerList" :key="player.imgName">
         <div class="button" @click="selectCharaType = player.displayName">
-          <div class="button" @click=`select${selectCharaType}DisplayName = ${player.displayName}`'>
+          <div class="button">
             {{selectPlayerDisplayName}}
+          </div>
           <label>
-            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
-            <input style="display: none" type="button" @click='`select${selectCharaType}ImgName = player.imgName`' value="選択"/>
+            <img class="cardImg" :src="getImageUrl(`${player.imgName}_face.gif`)" alt="">
+            <input style="display: none" type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
           </label>
         </div>
       </div>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
+import { getImageUrl } from '@/utils/imageLoader'
+
 export default {
   name: 'app',
   components: {},
@@ -79,6 +81,7 @@ export default {
     }
   },
   methods: {
+    getImageUrl,
     confirmChara() {
       if (this.selectStatus == false) {
         if (this.selectCharaType == 'Player') {

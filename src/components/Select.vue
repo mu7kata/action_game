@@ -3,14 +3,14 @@
     <h1><i class="bi bi-person-check-fill me-2"></i> キャラクター選択画面</h1>
     <h3>選択中：{{ selectPlayerDisplayName }}</h3>
     <div class=" ">
-      <img class="selectImg" :src="require(`@/assets/img/${selectPlayerImgName}_stand.gif`)" alt="">
+      <img class="selectImg" :src="getImageUrl(`${selectPlayerImgName}_stand.gif`)" alt="">
     </div>
 
 
     <div class="mt-3">
       <div v-if="!selectStatus">
         <button class="button bg-light p-2 fs-4" @click="confirmChara">
-          　このキャラクターですすむ<i class="bi bi-arrow-right ms-2"></i>　
+          　このキャラクターですすむ<i class="bi bi-arrow-right ms-2"></i>
         </button>
       </div>
       <div v-if="selectStatus" class="startArea w-25 m-auto">
@@ -47,10 +47,10 @@
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>
     <div class="bl_media_container">
-      <div class="bl_media_itemWrapper" v-for="player in playerList">
+      <div class="bl_media_itemWrapper" v-for="player in playerList" :key="player.imgName">
         <div class="button" @click="selectPlayerDisplayName = player.displayName">
           <label class="cardArea">
-            <img class="cardImg" :src="require(`@/assets/img/${player.imgName}_face.gif`)" alt="">
+            <img class="cardImg" :src="getImageUrl(`${player.imgName}_face.gif`)" alt="">
             <input style="display: none" type="button" @click="selectPlayerImgName = player.imgName" value="選択"/>
           </label>
         </div>
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { getImageUrl } from '@/utils/imageLoader'
+
 export default {
   name: 'app',
   components: {},
@@ -79,6 +81,7 @@ export default {
     }
   },
   methods: {
+    getImageUrl,
     confirmChara() {
       if (this.selectStatus == false) {
         return this.selectStatus = true
