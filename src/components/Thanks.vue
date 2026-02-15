@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <div class="gameTitle w-100">
-      <div v-if="this.$route.params.gameResult == 'clear'">
+      <div v-if="$route.params.gameResult == 'clear'">
         <h1 class="text-center">おめでとう！ゲームクリアです！</h1>
         <p>この度は遊んでいただきありがとうございました!<br>ゲームは今後アップデートする、、かもです。</p>
       </div>
-      <div v-if="this.$route.params.gameResult == 'lose'">
+      <div v-if="$route.params.gameResult == 'lose'">
         <h1 class="text-center">残念・・、ゲームオーバーです</h1>
         <p>再チャレンジお待ちしています</p>
       </div>
@@ -14,13 +14,13 @@
       </div>
       <div class="row m-auto w-50 mb-4">
         <div class="col-sm-4">
-          <img class="object" ref="player" :src="require('@/assets/img/enamy_1_stand.gif')">
+          <img class="object" ref="player" :src="getImageUrl('enamy_1_stand.gif')">
         </div>
         <div class="col-sm-4">
-          <img class="object" ref="player" :src="require('@/assets/img/enamy_3_stand.gif')">
+          <img class="object" ref="player" :src="getImageUrl('enamy_3_stand.gif')">
         </div>
         <div class="col-sm-4">
-          <img class="object" ref="player" :src="require('@/assets/img/enamy_2_stand.gif')">
+          <img class="object" ref="player" :src="getImageUrl('enamy_2_stand.gif')">
         </div>
       </div>
       <div>
@@ -32,8 +32,13 @@
   </div>
 </template>
 <script>
+import { getImageUrl } from '@/utils/imageLoader'
+
 export default {
   name: "Thanks",
+  methods: {
+    getImageUrl
+  }
 }
 </script>
 

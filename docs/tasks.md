@@ -1,36 +1,38 @@
 # Vue 3 移行 タスク一覧
 
 > **最終更新**: 2026-02-15
-> **現在のフェーズ**: 未着手
-> **次にやること**: フェーズ 1-1 から開始
+> **現在のフェーズ**: フェーズ 2+3+5 完了（ビルド移行 + Vue コア移行 + require変換）
+> **次にやること**: フェーズ 4（Vuex → Pinia）
 
 ---
 
 ## フェーズ 1: 準備
-- [ ] 1-1. 移行用ブランチ作成 (`feature/vue3-migration`)
-- [ ] 1-2. Node.js 20 LTS の確認
-- [ ] 1-3. 現行アプリの動作記録（スクリーンショット撮影）
+- [x] 1-1. 移行用ブランチ作成 (`feature/vue3-migration-phase2-3`)
+- [x] 1-2. Node.js 20 LTS の確認 → v24.13.1 で確認済み
+- [ ] 1-3. 現行アプリの動作記録（スクリーンショット撮影）→ 旧Webpackが Node 24 で動作しないためスキップ
 
 ## フェーズ 2: ビルドシステム移行 (Webpack 3 → Vite 6)
-- [ ] 2-1. Webpack/Babel 関連パッケージ削除
-- [ ] 2-2. Vite + @vitejs/plugin-vue インストール
-- [ ] 2-3. vite.config.ts 作成
-- [ ] 2-4. index.html 更新 (`<script type="module">`)
-- [ ] 2-5. package.json scripts 更新
-- [ ] 2-6. 不要ファイル削除 (build/, config/, .babelrc, .postcssrc.js, static/)
-- [ ] 2-7. 開発サーバー起動確認
+- [x] 2-1. Webpack/Babel 関連パッケージ削除（30+パッケージ）
+- [x] 2-2. Vite + @vitejs/plugin-vue インストール
+- [x] 2-3. vite.config.js 作成（エイリアス @→src/, ポート8080, test設定）
+- [x] 2-4. index.html 更新 (`<script type="module">`)
+- [x] 2-5. package.json scripts 更新（dev/build/preview/test）
+- [x] 2-6. 不要ファイル削除 (build/, config/, .babelrc, .postcssrc.js, static/)
+- [x] 2-7. 開発サーバー起動確認
 
 ## フェーズ 3: Vue コア移行 (Vue 2 → Vue 3)
-- [ ] 3-1. Vue 3 + Vue Router 4 インストール
-- [ ] 3-2. src/main.js 書き換え (createApp)
-- [ ] 3-3. src/router.js 書き換え (createRouter)
-- [ ] 3-4. Vue.config.productionTip 削除
-- [ ] 3-5. beforeDestroy → beforeUnmount (Battle.vue)
-- [ ] 3-6. テンプレート内 this 削除 (GameResult.vue, Thanks.vue)
-- [ ] 3-7. v-for に :key 追加 (Select.vue, FreeSelect.vue)
-- [ ] 3-8. beforeRouteUpdate 更新 (Battle.vue)
-- [ ] 3-9. $router.go() API 修正 (GameResult.vue)
-- [ ] 3-10. 基本動作確認 + テスト
+- [x] 3-1. Vue 3 + Vue Router 4 + Vuex 4 インストール
+- [x] 3-2. src/main.js 書き換え (createApp)
+- [x] 3-3. src/router.js 書き換え (createRouter + createWebHashHistory)
+- [x] 3-4. src/store.js 書き換え (createStore)
+- [x] 3-5. Vue.config.productionTip 削除
+- [x] 3-6. beforeDestroy → beforeUnmount (Battle.vue)
+- [x] 3-7. テンプレート内 this 削除 (GameResult.vue, Thanks.vue)
+- [x] 3-8. v-for に :key 追加 (Select.vue, FreeSelect.vue)
+- [x] 3-9. beforeRouteUpdate 更新 - next() 削除 (Battle.vue)
+- [x] 3-10. $router.go() API 修正 (GameResult.vue)
+- [x] 3-11. FreeSelect.vue テンプレート構文エラー修正
+- [x] 3-12. 基本動作確認 + テスト（11テスト全パス）
 
 ## フェーズ 4: 状態管理移行 (Vuex 3 → Pinia 3)
 - [ ] 4-1. Pinia インストール
@@ -43,12 +45,13 @@
 - [ ] 4-8. ストアテスト作成 + 動作確認
 
 ## フェーズ 5: require() → import 変換
-- [ ] 5-1. src/utils/imageLoader.ts 作成 + テスト
-- [ ] 5-2. Battle.vue の require 変換 (~30箇所)
-- [ ] 5-3. Select.vue の require 変換 (2箇所)
-- [ ] 5-4. Home.vue の require 変換 (4箇所)
-- [ ] 5-5. Thanks.vue の require 変換 (3箇所)
-- [ ] 5-6. 全画像表示の動作確認
+- [x] 5-1. src/utils/imageLoader.js 作成（import.meta.glob ベース）
+- [x] 5-2. Battle.vue の require 変換 (~30箇所)
+- [x] 5-3. Select.vue の require 変換 (2箇所)
+- [x] 5-4. Home.vue の require 変換 (4箇所)
+- [x] 5-5. Thanks.vue の require 変換 (3箇所)
+- [x] 5-6. FreeSelect.vue の require 変換 (3箇所)
+- [x] 5-7. 全画像表示の動作確認（Chrome DevTools MCP で全画面確認済み）
 
 ## フェーズ 6: Bootstrap 廃止 + 自前 CSS 化
 - [ ] 6-1. 変更前のスクリーンショット撮影
@@ -67,7 +70,7 @@
 - [ ] 7-7. vue-tsc --noEmit 確認
 
 ## フェーズ 8: CI/CD + テスト整備
-- [ ] 8-1. Vitest 導入
+- [x] 8-1. Vitest 導入（Phase 2+3 で前倒し実施）
 - [ ] 8-2. テスト作成 (ストア, ユーティリティ, コンポーネント)
 - [ ] 8-3. push.yml 更新 (ビルド & S3 デプロイ)
 - [ ] 8-4. open_pull_reqest.yml 更新 (ビルド・テスト追加)
@@ -88,7 +91,10 @@
 ---
 
 ## メモ・注意事項
-- Battle.vue が最も複雑（require ~30箇所、setTimeout多数、DOM直接操作あり）
-- GameResult.vue, Thanks.vue のテンプレート内 `this` は Vue 3 で動作しない → 必ず削除
-- FreeSelect.vue は未完成（テンプレート構文エラーあり）→ 移行対象外の方針
-- Bootstrap Icons はドットフォントの世界観に合わせ Unicode 文字に置換
+- Battle.vue が最も複雑（require ~30箇所、setTimeout多数、DOM直接操作あり）→ require変換完了
+- GameResult.vue, Thanks.vue のテンプレート内 `this` は Vue 3 で動作しない → 削除済み
+- FreeSelect.vue は未完成（テンプレート構文エラーあり）→ 構文エラーは修正済み。移行対象外の方針は維持
+- Bootstrap Icons はドットフォントの世界観に合わせ Unicode 文字に置換（フェーズ 6 で実施予定）
+- bootstrap-vue は Vue 2 専用のため CSS import のみ削除済み（bootstrap 本体と bootstrap-icons は残存）
+- Vitest + @vue/test-utils + happy-dom をフェーズ 2+3 で前倒し導入済み
+- imageLoader.js は import.meta.glob で全画像を事前ロードする方式を採用

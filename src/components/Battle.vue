@@ -49,6 +49,7 @@
 <script>
 import GameResult from "./GameResult.vue";
 import Thanks from "./Thanks.vue";
+import { getImageUrl } from '@/utils/imageLoader';
 
 export default {
   name: 'app',
@@ -81,8 +82,8 @@ export default {
     }
   }, mounted() {
     this.player = this.$route.params.selectPlayerImgName;
-    this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
-    this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
+    this.playerImage = getImageUrl(`${this.player}_stand.gif`);
+    this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown); //HACK
@@ -92,14 +93,11 @@ export default {
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
   },
-  beforeRouteUpdate(to, from, next) {
-    //再描画前のアクション
-    next();
-    //再描画後のアクション
+  beforeRouteUpdate(to, from) {
     this.$refs.gameResult.reload();
   },
   methods: {
@@ -127,10 +125,10 @@ export default {
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
         return;
       }
-      this.playerImage = require(`@/assets/img/${this.player}_attack.gif`);
+      this.playerImage = getImageUrl(`${this.player}_attack.gif`);
       this.playerStatus = 'attack';
       setTimeout(() => {
-          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 450
@@ -161,13 +159,13 @@ export default {
         return;
       }
       this.attackCount = 0;
-      this.playerImage = require(`@/assets/img/${this.player}_s_attack.gif`);
+      this.playerImage = getImageUrl(`${this.player}_s_attack.gif`);
       this.playerStatus = 'attack';
 
       // 遠距離タイプだった場合の処理
       if (this.playerAbility.attackType == 'longDistance') {
         setTimeout(() => {
-            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+            this.playerImage = getImageUrl(`${this.player}_stand.gif`);
             this.playerStatus = '';
           }
           , 1500
@@ -188,7 +186,7 @@ export default {
         return;
       }
       setTimeout(() => {
-          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 700
@@ -212,17 +210,17 @@ export default {
 
       if (this.wakeUpFlg == false && this.player == 'eda') { //TODO：一旦枝まつのみ
         this.wakeUpFlg = true;
-        this.playerImage = require(`@/assets/img/${this.player}_awake.gif`);
+        this.playerImage = getImageUrl(`${this.player}_awake.gif`);
         setTimeout(() => {
             this.player = this.player + '_w';
-            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+            this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           }
           , 1000
         );
         setTimeout(() => {
 
             this.player = this.player.replace("_w", "");
-            this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+            this.playerImage = getImageUrl(`${this.player}_stand.gif`);
             this.wakeUpFlg = 'used';
           }
           , 7000
@@ -231,7 +229,7 @@ export default {
     },
     damageMove() {
       this.attackCount = 0;
-      this.playerImage = require(`@/assets/img/${this.player}_damage.gif`);
+      this.playerImage = getImageUrl(`${this.player}_damage.gif`);
       this.playerStatus = 'damage';
       if (this.playerAbility.life <= 0) {
         this.deadMove();
@@ -239,7 +237,7 @@ export default {
       }
 
       setTimeout(() => {
-          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 500
@@ -247,10 +245,10 @@ export default {
 
     },
     gardMove() {
-      this.playerImage = require(`@/assets/img/${this.player}_gard.gif`);
+      this.playerImage = getImageUrl(`${this.player}_gard.gif`);
       this.attackCount = 0;
       setTimeout(() => {
-          this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+          this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 4000
@@ -259,13 +257,13 @@ export default {
       this.playerStatus = 'gard';
     },
     deadMove() {
-      this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+      this.playerImage = getImageUrl(`${this.player}_dead.gif`);
       this.playerStatus = 'dead';
       this.showGameResult();
     },
     playerLifeDecrease() {
       if (this.playerStatus == 'gard' || this.wakeUpFlg == true) {
-        this.playerImage = require(`@/assets/img/${this.player}_garding.gif`);
+        this.playerImage = getImageUrl(`${this.player}_garding.gif`);
         setTimeout(() => {
             this.p_x = this.p_x - 150;
           }
@@ -334,11 +332,11 @@ export default {
       return false
     },
     enemyDeadMove() {
-      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_dead.gif`);
+      this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_dead.gif`);
 
       setTimeout(() => {
 
-          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_deading.gif`);
+          this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_deading.gif`);
         }
         , 250
       );
@@ -402,10 +400,10 @@ export default {
       return num;
     },
     enemyAttackMove() {
-      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_attack.gif`);
+      this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_attack.gif`);
 
       setTimeout(() => {
-          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
+          this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
         }
         , 880
       );
@@ -416,10 +414,10 @@ export default {
       }
     },
     enemyDamageMove() {
-      this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_damege.gif`);
+      this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_damege.gif`);
       this.enemyStatus = 'damage';
       setTimeout(() => {
-          this.enemyImage = require(`@/assets/img/enamy_${this.$route.params.enemyNum}_stand.gif`);
+          this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
           this.enemyStatus = '';
         }
         , 800
@@ -428,7 +426,7 @@ export default {
     onKeyUp(event) {
       // console.log(this.playerStatus)
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
-        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+        this.playerImage = getImageUrl(`${this.player}_dead.gif`);
         return;
       }
 
@@ -443,7 +441,7 @@ export default {
       if (this.keyCode === 32) {
         this.attackCount = this.attackCount + 1;
         if (this.attackCount > 7) {
-          this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+          this.playerImage = getImageUrl(`${this.player}_dead.gif`);
           this.playerStatus = 'damage';
           setTimeout(() => {
               this.resetStatus()
@@ -469,7 +467,7 @@ export default {
     },
     onKeyDown(event) {
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
-        this.playerImage = require(`@/assets/img/${this.player}_dead.gif`);
+        this.playerImage = getImageUrl(`${this.player}_dead.gif`);
         return;
       }
       this.keyCode = event.keyCode
@@ -505,7 +503,7 @@ export default {
       }
     },
     resetStatus() {
-      this.playerImage = require(`@/assets/img/${this.player}_stand.gif`);
+      this.playerImage = getImageUrl(`${this.player}_stand.gif`);
       this.playerStatus = '';
     },
     showGameResult() {
