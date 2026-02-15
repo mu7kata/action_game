@@ -67,8 +67,8 @@ export default defineComponent({
       player: '',
       p_x: 0,
       p_y: 0,
-      e_x: 200 as number,//敵キャラの位置（横）
-      e_y: 0 as number,//敵キャラの位置（縦）
+      e_x: 200,//敵キャラの位置（横）
+      e_y: 0,//敵キャラの位置（縦）
       playerImage: '',
       enemyImage: '',
       keyCode: null as number | null,
@@ -79,7 +79,7 @@ export default defineComponent({
       gameResult: false,
       maxEnemyLife: 0,
       maxPlayerLife: 0,
-      enterKey: 13 as number | '',
+      enterKey: 13 as number | null,
       spaceKey: 32,
       attackCount: 0
     }
@@ -464,7 +464,7 @@ export default defineComponent({
       }
 
       if (this.keyCode == this.enterKey) {
-        this.enterKey = '';
+        this.enterKey = null;
         this.strongAttackMove();
         setTimeout(() => {
             this.enterKey = 13;
