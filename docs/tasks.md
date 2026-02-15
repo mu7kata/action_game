@@ -1,8 +1,8 @@
 # Vue 3 移行 タスク一覧
 
 > **最終更新**: 2026-02-15
-> **現在のフェーズ**: フェーズ 2+3+4+5+6 完了（ビルド移行 + Vue コア移行 + Pinia移行 + require変換 + Bootstrap廃止）
-> **次にやること**: フェーズ 7（TypeScript 導入）
+> **現在のフェーズ**: フェーズ 2+3+4+5+6+7 完了（ビルド移行 + Vue コア移行 + Pinia移行 + require変換 + Bootstrap廃止 + TypeScript導入）
+> **次にやること**: フェーズ 8（CI/CD + テスト整備）
 
 ---
 
@@ -61,13 +61,17 @@
 - [x] 6-5. デザイン比較確認（docs/screenshots/phase6-after/ で比較、全画面レイアウト崩れなし）
 
 ## フェーズ 7: TypeScript 導入
-- [ ] 7-1. typescript + vue-tsc インストール
-- [ ] 7-2. tsconfig.json, tsconfig.node.json, env.d.ts 作成
-- [ ] 7-3. vite.config.js → vite.config.ts
-- [ ] 7-4. ストアを TypeScript 化
-- [ ] 7-5. ユーティリティを TypeScript 化
-- [ ] 7-6. コンポーネントの段階的 TypeScript 化
-- [ ] 7-7. vue-tsc --noEmit 確認
+- [x] 7-1. typescript + vue-tsc インストール
+- [x] 7-2. tsconfig.json, tsconfig.node.json, env.d.ts 作成
+- [x] 7-3. vite.config.js → vite.config.ts
+- [x] 7-4. ストアを TypeScript 化（player.ts, enemy.ts に型定義追加）
+- [x] 7-5. ユーティリティを TypeScript 化（imageLoader.ts）
+- [x] 7-6. コンポーネントの段階的 TypeScript 化（全6コンポーネント defineComponent 化）
+- [x] 7-7. vue-tsc --noEmit 確認（型エラーゼロ）
+- [x] 7-8. main.js → main.ts, router.js → router.ts 変換
+- [x] 7-9. テストファイルを TypeScript 化（11テスト全パス）
+- [x] 7-10. 全画面動作確認（Chrome DevTools MCP で Home, Select, Battle, Thanks 確認済み）
+- [x] 7-11. 本番ビルド確認（vite build 成功）
 
 ## フェーズ 8: CI/CD + テスト整備
 - [x] 8-1. Vitest 導入（Phase 2+3 で前倒し実施）
@@ -98,3 +102,6 @@
 - Bootstrap 完全廃止済み（bootstrap, bootstrap-icons パッケージ削除、自前 CSS に移行）
 - Vitest + @vue/test-utils + happy-dom をフェーズ 2+3 で前倒し導入済み
 - imageLoader.js は import.meta.glob で全画像を事前ロードする方式を採用
+- TypeScript 導入済み: strict モード有効、全ファイル .ts/.vue(lang="ts") 化完了
+- ストアの型: PlayerName, EnemyLevel, PlayerStatus, EnemyStatus を定義・export
+- package.json に `type-check` スクリプト追加（`vue-tsc --noEmit`）

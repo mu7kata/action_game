@@ -46,15 +46,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import GameResult from "./GameResult.vue";
 import Thanks from "./Thanks.vue";
 import { getImageUrl } from '@/utils/imageLoader';
 import { usePlayerStore } from '@/stores/player'
 import { useEnemyStore } from '@/stores/enemy'
+import type { EnemyLevel } from '@/stores/enemy'
+import type { PlayerName } from '@/stores/player'
 
-export default {
-  name: 'app',
+export default defineComponent({
+  name: 'Battle',
   components: {
     GameResult,
     Thanks
@@ -68,15 +71,15 @@ export default {
       e_y: 0,//敵キャラの位置（縦）
       playerImage: '',
       enemyImage: '',
-      keyCode: null,
+      keyCode: null as number | null,
       playerStatus: '',
-      wakeUpFlg: false,
+      wakeUpFlg: false as boolean | 'used',
       enemyStatus: '',
-      matchEndMessage: "",
+      matchEndMessage: '',
       gameResult: false,
-      maxEnemyLife: '',//HACK:
-      maxPlayerLife: '', //HACK:
-      enterKey: 13,
+      maxEnemyLife: 0,
+      maxPlayerLife: 0,
+      enterKey: 13 as number | null,
       spaceKey: 32,
       attackCount: 0
     }
@@ -86,15 +89,15 @@ export default {
     playerAbility() { return usePlayerStore().status },
   },
   mounted() {
-    this.player = this.$route.params.selectPlayerImgName;
+    this.player = this.$route.params.selectPlayerImgName as string;
     this.playerImage = getImageUrl(`${this.player}_stand.gif`);
     this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
     this.enemyAutoAction();
     document.addEventListener('keyup', this.onKeyUp);
-    document.addEventListener('keydown', this.onKeyDown); //HACK
+    document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
-    useEnemyStore().selectEnemy(this.$route.params.enemyNum);
-    usePlayerStore().selectPlayer(this.$route.params.selectPlayerImgName);
+    useEnemyStore().selectEnemy(Number(this.$route.params.enemyNum) as EnemyLevel);
+    usePlayerStore().selectPlayer(this.$route.params.selectPlayerImgName as PlayerName);
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
   },
@@ -102,8 +105,8 @@ export default {
     document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
   },
-  beforeRouteUpdate(to, from) {
-    this.$refs.gameResult.reload();
+  beforeRouteUpdate() {
+    (this.$refs.gameResult as InstanceType<typeof GameResult>).reload();
   },
   methods: {
     rightMove() {
@@ -152,9 +155,9 @@ export default {
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
-        let damage = this.playerAbility.attack
+        let damage: number = this.playerAbility.attack
         if (this.wakeUpFlg == true) {
-          damage = this.playerAbility.w_attack;
+          damage = this.playerAbility.w_attack ?? this.playerAbility.attack;
         }
         this.enemyLifeDecrease(damage);
       }
@@ -200,9 +203,9 @@ export default {
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
         setTimeout(() => {
-            let damage = this.playerAbility.attack
+            let damage: number = this.playerAbility.attack
             if (this.wakeUpFlg == true) {
-              damage = this.playerAbility.w_attack;
+              damage = this.playerAbility.w_attack ?? this.playerAbility.attack;
             }
             this.enemyLifeDecrease(damage * 1.5);
           }
@@ -288,7 +291,7 @@ export default {
         // HACK:マイナスの値はなぜか反応しないため
         lessLife = 0;
       }
-      lifeBar[0].style.width = lessLife + "%"
+      ;(lifeBar[0] as HTMLElement).style.width = lessLife + "%"
       this.damageMove();
       setTimeout(() => {
           if (this.p_x < -250) {
@@ -299,7 +302,7 @@ export default {
         , 300
       );
     },
-    enemyLifeDecrease(damage) {
+    enemyLifeDecrease(damage: number) {
       if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
         return;
       }
@@ -311,7 +314,7 @@ export default {
         // HACK:マイナスの値はなぜか反応しないため
         lessLife = 0;
       }
-      lifeBar[0].style.width = lessLife + "%";
+      ;(lifeBar[0] as HTMLElement).style.width = lessLife + "%";
 
       this.enemyDamageMove();
 
@@ -326,9 +329,9 @@ export default {
       );
     },
     isConflict() {
-      const enemyDom = this.$refs.enemy;
+      const enemyDom = this.$refs.enemy as HTMLElement;
       const enemyRect = enemyDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
-      const playerDom = this.$refs.player;
+      const playerDom = this.$refs.player as HTMLElement;
       const playerRect = playerDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
 
       if ((enemyRect.right - playerRect.right) < 300) {
@@ -396,7 +399,7 @@ export default {
       }
 
     },
-    getRandom(motionRange) {
+    getRandom(motionRange: number) {
       let n = motionRange / 2
       let num = 0;
       for (let i = 0; i < 5; i++) {
@@ -428,7 +431,7 @@ export default {
         , 800
       );
     },
-    onKeyUp(event) {
+    onKeyUp(event: KeyboardEvent) {
       // console.log(this.playerStatus)
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
         this.playerImage = getImageUrl(`${this.player}_dead.gif`);
@@ -461,7 +464,7 @@ export default {
       }
 
       if (this.keyCode == this.enterKey) {
-        this.enterKey = '';
+        this.enterKey = null;
         this.strongAttackMove();
         setTimeout(() => {
             this.enterKey = 13;
@@ -470,7 +473,7 @@ export default {
         );
       }
     },
-    onKeyDown(event) {
+    onKeyDown(event: KeyboardEvent) {
       if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
         this.playerImage = getImageUrl(`${this.player}_dead.gif`);
         return;
@@ -519,14 +522,14 @@ export default {
       if (this.enemyAbility.life <= 0) {
         this.matchEndMessage = 'win'
 
-        if (this.$route.params.enemyNum == 3) {
+        if (Number(this.$route.params.enemyNum) == 3) {
           this.matchEndMessage = 'clear'
         }
       }
 
     },
   }
-}
+})
 </script>
 <style>
 .action {

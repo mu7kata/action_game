@@ -24,24 +24,28 @@
     </div>
   </div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: "GameResult",
-  props: ["matchEndMessage"],
-  data() {
-    return {}
+  props: {
+    matchEndMessage: {
+      type: String,
+      default: ''
+    }
   },
   methods: {
     reload() {
       this.$router.go(0);
     },
-    getNextEnemyPath() {
-      let enemyString = this.$route.params.enemyNum;
-      let enemyNum = Number(enemyString);
+    getNextEnemyPath(): number {
+      const enemyString = this.$route.params.enemyNum as string;
+      const enemyNum = Number(enemyString);
       return enemyNum + 1;
     }
   },
-};
+})
 </script>
 
 <style scoped>

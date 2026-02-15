@@ -9,7 +9,8 @@
     "start": "npm run dev",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "type-check": "vue-tsc --noEmit"
   },
   "engines": {
     "node": ">= 6.0.0",
@@ -29,7 +30,9 @@
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^20.6.1",
+    "typescript": "^5.9.3",
     "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "vue-tsc": "^3.2.4"
   }
 }

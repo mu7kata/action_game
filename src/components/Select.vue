@@ -60,12 +60,17 @@
 
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { getImageUrl } from '@/utils/imageLoader'
 
-export default {
-  name: 'app',
-  components: {},
+interface PlayerInfo {
+  imgName: string
+  displayName: string
+}
+
+export default defineComponent({
+  name: 'Select',
   data() {
     return {
       selectPlayerImgName: 'haru',
@@ -75,7 +80,7 @@ export default {
         {imgName: 'kaki', displayName: 'カッキー'},
         {imgName: 'eda', displayName: 'えだまつ'},
         {imgName: 'kuni', displayName: 'くにあき'},
-      ],
+      ] as PlayerInfo[],
       selectStatus: false,
       accordionIcon: "▶"
     }
@@ -91,10 +96,8 @@ export default {
     openAccordion() {
       this.accordionIcon = this.accordionIcon === '▼' ? '▶' : '▼';
     },
-
-
   }
-}
+})
 </script>
 
 <style>

@@ -1,11 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from "@/components/Home.vue"
-import Battle from "@/components/Battle.vue"
-import Select from "@/components/Select.vue"
-import Thanks from "./components/Thanks.vue"
-import FreeSelect from "./components/FreeSelect.vue"
+import type { RouteRecordRaw } from 'vue-router'
+import Home from '@/components/Home.vue'
+import Battle from '@/components/Battle.vue'
+import Select from '@/components/Select.vue'
+import Thanks from './components/Thanks.vue'
+import FreeSelect from './components/FreeSelect.vue'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',

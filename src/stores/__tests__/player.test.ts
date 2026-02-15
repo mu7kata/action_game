@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { usePlayerStore } from '../player.js'
+import { usePlayerStore } from '../player'
 
 describe('player store', () => {
-  let store
+  let store: ReturnType<typeof usePlayerStore>
 
   beforeEach(() => {
     setActivePinia(createPinia())

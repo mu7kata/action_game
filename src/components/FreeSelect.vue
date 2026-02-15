@@ -51,12 +51,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { getImageUrl } from '@/utils/imageLoader'
 
-export default {
-  name: 'app',
-  components: {},
+interface PlayerInfo {
+  imgName: string
+  displayName: string
+}
+
+export default defineComponent({
+  name: 'FreeSelect',
   data() {
     return {
       selectPlayerImgName: 'kaki',
@@ -68,13 +73,7 @@ export default {
         {imgName: 'kuni', displayName: 'くに'},
         {imgName: 'eda', displayName: 'えだ'},
         {imgName: 'haru', displayName: 'はる'},
-      ],
-      // enemyList: [
-      //   {imgName: 3, displayName: 'えだ'},
-      // {imgName: '1', displayName: 'かき'},
-      // {imgName: '2', displayName: 'くに'},
-      // {imgName: 'haru', displayName: 'はる'},
-      // ],
+      ] as PlayerInfo[],
       selectStatus: false,
       accordionIcon: "▶",
       selectCharaType: 'Player',
@@ -96,9 +95,8 @@ export default {
     openAccordion() {
       this.accordionIcon = this.accordionIcon === '▼' ? '▶' : '▼';
     },
-
   }
-}
+})
 </script>
 
 <style>
