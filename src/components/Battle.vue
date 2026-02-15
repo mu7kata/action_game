@@ -50,6 +50,8 @@
 import GameResult from "./GameResult.vue";
 import Thanks from "./Thanks.vue";
 import { getImageUrl } from '@/utils/imageLoader';
+import { usePlayerStore } from '@/stores/player'
+import { useEnemyStore } from '@/stores/enemy'
 
 export default {
   name: 'app',
@@ -72,15 +74,18 @@ export default {
       enemyStatus: '',
       matchEndMessage: "",
       gameResult: false,
-      enemyAbility: this.$store.getters['enemy/status'],
-      playerAbility: this.$store.getters['player/status'],
       maxEnemyLife: '',//HACK:
       maxPlayerLife: '', //HACK:
       enterKey: 13,
       spaceKey: 32,
       attackCount: 0
     }
-  }, mounted() {
+  },
+  computed: {
+    enemyAbility() { return useEnemyStore().status },
+    playerAbility() { return usePlayerStore().status },
+  },
+  mounted() {
     this.player = this.$route.params.selectPlayerImgName;
     this.playerImage = getImageUrl(`${this.player}_stand.gif`);
     this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
@@ -88,8 +93,8 @@ export default {
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown); //HACK
     this.e_x = 850;
-    this.$store.commit("enemy/selectEnemy", this.$route.params.enemyNum);
-    this.$store.commit("player/selectPlayer", this.$route.params.selectPlayerImgName);
+    useEnemyStore().selectEnemy(this.$route.params.enemyNum);
+    usePlayerStore().selectPlayer(this.$route.params.selectPlayerImgName);
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
   },
@@ -299,7 +304,7 @@ export default {
         return;
       }
       //体力ゲージ消費処理
-      this.$store.commit("enemy/changeLife", damage)
+      useEnemyStore().changeLife(damage)
       const lifeBar = document.getElementsByClassName('enemy-life-bar');
       let lessLife = Math.floor(this.enemyAbility.life / this.maxEnemyLife * 100)
       if (lessLife < 0) {
