@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1><i class="bi bi-person-check-fill me-2"></i> キャラクター選択画面</h1>
+    <h1><span class="me-2">■</span> キャラクター選択画面</h1>
 
     <div class="row w-50 m-auto">
       <div class="col-sm-6">
@@ -19,17 +19,17 @@
     <div class="mt-3">
       <div v-if="!selectStatus">
         <button class="button bg-light p-2 fs-4" @click="confirmChara">
-          　このキャラクターですすむ<i class="bi bi-arrow-right ms-2"></i>　
+          　このキャラクターですすむ<span class="ms-2">→</span>
         </button>
       </div>
       <div v-if="selectStatus" class="startArea w-25 m-auto">
         <div>
           <router-link class="button startButton mb-2 fs-3" :to="`battle/${selectPlayerImgName}/1`">
-            バトルスタート <i class="bi bi-arrow-right ms-2"></i>
+            バトルスタート <span class="ms-2">→</span>
           </router-link>
         </div>
-        <div v-if="selectStatus"><a class="reSelectButton pt-4" @click="confirmChara">　<i
-          class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす</a></div>
+        <div v-if="selectStatus"><a class="reSelectButton pt-4" @click="confirmChara">　<span
+          class="me-2">↻</span>キャラクターを選択しなおす</a></div>
       </div>
     </div>
     <div class="w-50 m-auto text-start pt-5 fs-3">
@@ -76,7 +76,7 @@ export default {
       // {imgName: 'haru', displayName: 'はる'},
       // ],
       selectStatus: false,
-      accordionButtonClass: "bi bi-caret-right-fill me-2",
+      accordionIcon: "▶",
       selectCharaType: 'Player',
     }
   },
@@ -94,12 +94,7 @@ export default {
       return this.selectStatus = false
     },
     openAccordion() {
-      let right = "bi bi-caret-right-fill me-2";
-      let down = "bi bi-caret-down-fill me-2";
-      if (this.accordionButtonClass == down) {
-        return this.accordionButtonClass = right;
-      }
-      return this.accordionButtonClass = down;
+      this.accordionIcon = this.accordionIcon === '▼' ? '▶' : '▼';
     },
 
   }

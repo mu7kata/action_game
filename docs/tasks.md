@@ -1,8 +1,8 @@
 # Vue 3 移行 タスク一覧
 
 > **最終更新**: 2026-02-15
-> **現在のフェーズ**: フェーズ 2+3+4+5 完了（ビルド移行 + Vue コア移行 + Pinia移行 + require変換）
-> **次にやること**: フェーズ 6（Bootstrap 廃止 + 自前 CSS 化）
+> **現在のフェーズ**: フェーズ 2+3+4+5+6 完了（ビルド移行 + Vue コア移行 + Pinia移行 + require変換 + Bootstrap廃止）
+> **次にやること**: フェーズ 7（TypeScript 導入）
 
 ---
 
@@ -54,11 +54,11 @@
 - [x] 5-7. 全画像表示の動作確認（Chrome DevTools MCP で全画面確認済み）
 
 ## フェーズ 6: Bootstrap 廃止 + 自前 CSS 化
-- [ ] 6-1. 変更前のスクリーンショット撮影
-- [ ] 6-2. Bootstrap ユーティリティクラスを common.css に自前定義
-- [ ] 6-3. Bootstrap Icons を Unicode テキスト文字に置換
-- [ ] 6-4. bootstrap, bootstrap-vue, bootstrap-icons 削除
-- [ ] 6-5. デザイン比較確認（スクリーンショット比較）
+- [x] 6-1. 変更前のスクリーンショット撮影（docs/screenshots/phase6-before/）
+- [x] 6-2. Bootstrap ユーティリティクラスを common.css に自前定義（row, col-sm-*, m-*, p-*, w-*, text-*, bg-*, fs-* 等 30+クラス）
+- [x] 6-3. Bootstrap Icons を Unicode テキスト文字に置換（▶, ■, →, ↻, ⌂, ▼）
+- [x] 6-4. bootstrap, bootstrap-icons 削除（bootstrap-vue は既に未使用）
+- [x] 6-5. デザイン比較確認（docs/screenshots/phase6-after/ で比較、全画面レイアウト崩れなし）
 
 ## フェーズ 7: TypeScript 導入
 - [ ] 7-1. typescript + vue-tsc インストール
@@ -94,7 +94,7 @@
 - Battle.vue が最も複雑（require ~30箇所、setTimeout多数、DOM直接操作あり）→ require変換完了
 - GameResult.vue, Thanks.vue のテンプレート内 `this` は Vue 3 で動作しない → 削除済み
 - FreeSelect.vue は未完成（テンプレート構文エラーあり）→ 構文エラーは修正済み。移行対象外の方針は維持
-- Bootstrap Icons はドットフォントの世界観に合わせ Unicode 文字に置換（フェーズ 6 で実施予定）
-- bootstrap-vue は Vue 2 専用のため CSS import のみ削除済み（bootstrap 本体と bootstrap-icons は残存）
+- Bootstrap Icons はドットフォントの世界観に合わせ Unicode 文字に置換済み（▶, ■, →, ↻, ⌂, ▼）
+- Bootstrap 完全廃止済み（bootstrap, bootstrap-icons パッケージ削除、自前 CSS に移行）
 - Vitest + @vue/test-utils + happy-dom をフェーズ 2+3 で前倒し導入済み
 - imageLoader.js は import.meta.glob で全画像を事前ロードする方式を採用

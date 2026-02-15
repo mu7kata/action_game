@@ -5,19 +5,19 @@
         <div v-if="matchEndMessage == 'win'">
           <h1 class="resultMsg gameWinMsg">かち！！！</h1>
           <router-link class="button" :to="`/battle/${$route.params.selectPlayerImgName}/${getNextEnemyPath()}`">
-            　次の対戦へすすむ <i class="bi bi-arrow-right"></i>
+            　次の対戦へすすむ <span>→</span>
           </router-link>
         </div>
         <div v-if="matchEndMessage == 'clear'">
           <h1 class="resultMsg gameWinMsg">かち！！！</h1>
           <router-link class="button" :to="`/thanks/${matchEndMessage}`">
-            　次へ <i class="bi bi-arrow-right"></i>
+            　次へ <span>→</span>
           </router-link>
         </div>
         <div v-if="matchEndMessage == 'lose'">
           <h1 class="resultMsg gameLoseMsg">まけ・・・</h1>
           <router-link class="button" :to="`/thanks/${matchEndMessage}`">
-            　次へ <i class="bi bi-arrow-right"></i>
+            　次へ <span>→</span>
           </router-link>
         </div>
       </div>
