@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import router from '../router.js'
+import router from '../router'
 
 describe('router', () => {
   it('5つのルートが定義されている', () => {

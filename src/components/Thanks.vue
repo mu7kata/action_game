@@ -31,15 +31,16 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { getImageUrl } from '@/utils/imageLoader'
 
-export default {
+export default defineComponent({
   name: "Thanks",
   methods: {
     getImageUrl
   }
-}
+})
 </script>
 
 <style scoped>

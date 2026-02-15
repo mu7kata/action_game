@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useEnemyStore } from '../enemy.js'
+import { useEnemyStore } from '../enemy'
 
 describe('enemy store', () => {
-  let store
+  let store: ReturnType<typeof useEnemyStore>
 
   beforeEach(() => {
     setActivePinia(createPinia())
