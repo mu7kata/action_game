@@ -1,8 +1,8 @@
 # Vue 3 移行 タスク一覧
 
 > **最終更新**: 2026-02-15
-> **現在のフェーズ**: フェーズ 2+3+5 完了（ビルド移行 + Vue コア移行 + require変換）
-> **次にやること**: フェーズ 4（Vuex → Pinia）
+> **現在のフェーズ**: フェーズ 2+3+4+5 完了（ビルド移行 + Vue コア移行 + Pinia移行 + require変換）
+> **次にやること**: フェーズ 6（Bootstrap 廃止 + 自前 CSS 化）
 
 ---
 
@@ -34,15 +34,15 @@
 - [x] 3-11. FreeSelect.vue テンプレート構文エラー修正
 - [x] 3-12. 基本動作確認 + テスト（11テスト全パス）
 
-## フェーズ 4: 状態管理移行 (Vuex 3 → Pinia 3)
-- [ ] 4-1. Pinia インストール
-- [ ] 4-2. src/stores/player.ts 作成
-- [ ] 4-3. src/stores/enemy.ts 作成
-- [ ] 4-4. src/store.js → createPinia() に書き換え
-- [ ] 4-5. main.js 更新 (app.use(pinia))
-- [ ] 4-6. Battle.vue のストアアクセス変更
-- [ ] 4-7. Vuex 削除
-- [ ] 4-8. ストアテスト作成 + 動作確認
+## フェーズ 4: 状態管理移行 (Vuex 4 → Pinia 3)
+- [x] 4-1. Pinia インストール
+- [x] 4-2. src/stores/player.js 作成（defineStore + actions）
+- [x] 4-3. src/stores/enemy.js 作成（defineStore + actions）
+- [x] 4-4. src/store.js 削除 → main.js で createPinia() に変更
+- [x] 4-5. main.js 更新 (app.use(pinia))
+- [x] 4-6. Battle.vue のストアアクセス変更（$store.commit → useXxxStore()）
+- [x] 4-7. Vuex 削除（vuex パッケージ + 旧 src/store/ ディレクトリ）
+- [x] 4-8. ストアテスト作成 + 動作確認（11テスト全パス + Chrome DevTools MCP 確認）
 
 ## フェーズ 5: require() → import 変換
 - [x] 5-1. src/utils/imageLoader.js 作成（import.meta.glob ベース）
