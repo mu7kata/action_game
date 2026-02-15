@@ -21,8 +21,6 @@
     "not ie <= 8"
   ],
   "dependencies": {
-    "bootstrap": "^5.2.0",
-    "bootstrap-icons": "^1.9.1",
     "pinia": "^3.0.4",
     "vue": "^3.5.28",
     "vue-router": "^4.6.4"

@@ -25,7 +25,7 @@
       </div>
       <div>
         <a class="button p-2" href="/">
-          ホームへ戻る <i class="bi bi-house-door-fill"></i>
+          ホームへ戻る <span>⌂</span>
         </a>
       </div>
     </div>

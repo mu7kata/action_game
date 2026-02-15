@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1><i class="bi bi-person-check-fill me-2"></i> キャラクター選択画面</h1>
+    <h1><span class="me-2">■</span> キャラクター選択画面</h1>
     <h3>選択中：{{ selectPlayerDisplayName }}</h3>
     <div class=" ">
       <img class="selectImg" :src="getImageUrl(`${selectPlayerImgName}_stand.gif`)" alt="">
@@ -10,23 +10,23 @@
     <div class="mt-3">
       <div v-if="!selectStatus">
         <button class="button bg-light p-2 fs-4" @click="confirmChara">
-          　このキャラクターですすむ<i class="bi bi-arrow-right ms-2"></i>
+          　このキャラクターですすむ<span class="ms-2">→</span>
         </button>
       </div>
       <div v-if="selectStatus" class="startArea w-25 m-auto">
         <p class="mb-2 pt-2 fs-4">3かい "かち" でゲームクリア</p>
         <div>
         <router-link class="button startButton mb-2 fs-3" :to="`battle/${selectPlayerImgName}/1`">
-          バトルスタート <i class="bi bi-arrow-right ms-2"></i>
+          バトルスタート <span class="ms-2">→</span>
         </router-link>
         </div>
-      <div v-if="selectStatus"><a  class="reSelectButton pt-4" @click="confirmChara">　<i class="bi bi-arrow-clockwise me-2"></i>キャラクターを選択しなおす</a></div>
+      <div v-if="selectStatus"><a  class="reSelectButton pt-4" @click="confirmChara">　<span class="me-2">↻</span>キャラクターを選択しなおす</a></div>
       </div>
     </div>
     <div class=" mt-5 fs-4 m-auto " style="width: 45%;">
       <details class="text-start">
         <summary @click="openAccordion">
-          <i :class="accordionButtonClass"></i> 操作方法(コマンド)
+          <span class="me-2">{{ accordionIcon }}</span> 操作方法(コマンド)
         </summary>
 
         <div class="m-auto w-100">
@@ -77,7 +77,7 @@ export default {
         {imgName: 'kuni', displayName: 'くにあき'},
       ],
       selectStatus: false,
-      accordionButtonClass: "bi bi-caret-right-fill me-2"
+      accordionIcon: "▶"
     }
   },
   methods: {
@@ -89,12 +89,7 @@ export default {
       return this.selectStatus = false
     },
     openAccordion() {
-      let right = "bi bi-caret-right-fill me-2";
-      let down = "bi bi-caret-down-fill me-2";
-      if (this.accordionButtonClass == down) {
-        return this.accordionButtonClass = right;
-      }
-      return this.accordionButtonClass = down;
+      this.accordionIcon = this.accordionIcon === '▼' ? '▶' : '▼';
     },
 
 
