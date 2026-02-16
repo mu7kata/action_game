@@ -7,7 +7,9 @@
 
 
 ## システム構成
-Bootstrap：5.2.0<br>
-Vue.js: 2.5.2<br>
-Vue-router: 3.0.1<br>
-Vuex: 3.0.1<br>
+Vue.js: 3.5<br>
+Vue Router: 4.6<br>
+Pinia: 3.0<br>
+Vite: 7.3<br>
+TypeScript: 5.9<br>
+Vitest: 4.0<br>
