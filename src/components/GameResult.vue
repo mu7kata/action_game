@@ -36,9 +36,6 @@ export default defineComponent({
     }
   },
   methods: {
-    reload() {
-      this.$router.go(0);
-    },
     getNextEnemyPath(): number {
       const enemyString = this.$route.params.enemyNum as string;
       const enemyNum = Number(enemyString);

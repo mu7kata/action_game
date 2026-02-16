@@ -100,10 +100,9 @@ export default defineComponent({
 })
 </script>
 
-<style>
-* {
+<style scoped>
+ul {
   list-style: none;
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
