@@ -94,3 +94,14 @@
 /* Font size */
 .fs-3 { font-size: 1.75rem; }
 .fs-4 { font-size: 1.5rem; }
+
+/* スマホ向けレスポンシブ */
+@media screen and (max-width: 599px) {
+  .col-sm-3 { width: 50%; }
+  .col-sm-4 { width: 50%; }
+  .col-sm-6 { width: 100%; }
+  .ms-5 { margin-left: 1rem; }
+  .mt-5 { margin-top: 1.5rem; }
+  .fs-3 { font-size: 1.25rem; }
+  .fs-4 { font-size: 1.1rem; }
+}

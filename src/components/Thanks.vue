@@ -49,5 +49,10 @@ export default defineComponent({
   top: 25%;
 }
 
-
+@media screen and (max-width: 599px) {
+  .gameTitle {
+    position: static;
+    padding-top: 1rem;
+  }
+}
 </style>

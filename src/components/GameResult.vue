@@ -36,9 +36,6 @@ export default defineComponent({
     }
   },
   methods: {
-    reload() {
-      this.$router.go(0);
-    },
     getNextEnemyPath(): number {
       const enemyString = this.$route.params.enemyNum as string;
       const enemyNum = Number(enemyString);
@@ -78,5 +75,11 @@ export default defineComponent({
   color: blue;
 }
 
+@media screen and (max-width: 599px) {
+  .resultMsg {
+    font-size: 2.5em;
+    -webkit-text-stroke: 2px #2E2E2E;
+  }
+}
 
 </style>

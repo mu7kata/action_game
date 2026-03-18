@@ -36,8 +36,40 @@ describe('Select.vue', () => {
 
   it('4人のキャラクターカードが表示される', async () => {
     const wrapper = await mountSelect()
-    const cards = wrapper.findAll('.bl_media_itemWrapper')
+    const cards = wrapper.findAll('.card-item')
     expect(cards).toHaveLength(4)
+  })
+
+  it('カードにキャラ名が表示される', async () => {
+    const wrapper = await mountSelect()
+    const names = wrapper.findAll('.card-name')
+    expect(names).toHaveLength(4)
+    expect(names[0].text()).toBe('はるか')
+    expect(names[1].text()).toBe('カッキー')
+    expect(names[2].text()).toBe('えだまつ')
+    expect(names[3].text()).toBe('くにあき')
+  })
+
+  it('カードクリックで選択キャラが変わる', async () => {
+    const wrapper = await mountSelect()
+    expect(wrapper.text()).toContain('選択中：はるか')
+
+    const cards = wrapper.findAll('.card-item')
+    await cards[1].trigger('click')
+
+    expect(wrapper.text()).toContain('選択中：カッキー')
+  })
+
+  it('選択中のカードにハイライトが付く', async () => {
+    const wrapper = await mountSelect()
+    const cards = wrapper.findAll('.card-item')
+    expect(cards[0].classes()).toContain('card-selected')
+    expect(cards[1].classes()).not.toContain('card-selected')
+
+    await cards[2].trigger('click')
+    const updatedCards = wrapper.findAll('.card-item')
+    expect(updatedCards[0].classes()).not.toContain('card-selected')
+    expect(updatedCards[2].classes()).toContain('card-selected')
   })
 
   it('「このキャラクターですすむ」ボタンで確認状態に切り替わる', async () => {

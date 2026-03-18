@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="appContainer">
-    <router-view />
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 
@@ -20,6 +20,12 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+@media screen and (max-width: 599px) {
+  #app {
+    margin-top: 20px;
+  }
 }
 </style>
 

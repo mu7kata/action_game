@@ -2,7 +2,7 @@
   <div id="app">
     <h1><span class="me-2">■</span> キャラクター選択画面</h1>
 
-    <div class="row w-50 m-auto">
+    <div class="row select-row m-auto">
       <div class="col-sm-6">
         <h3>選択中：{{ selectPlayerDisplayName }}</h3>
         <div class=" ">
@@ -32,7 +32,7 @@
           class="me-2">↻</span>キャラクターを選択しなおす</a></div>
       </div>
     </div>
-    <div class="w-50 m-auto text-start pt-5 fs-3">
+    <div class="select-guide m-auto text-start pt-5 fs-3">
       <p class="mb-0 ms-5">使いたいキャラクターを選択してください</p>
     </div>
     <div class="bl_media_container col-sm-6">
@@ -99,14 +99,12 @@ export default defineComponent({
 })
 </script>
 
-<style>
-* {
+<style scoped>
+ul {
   list-style: none;
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
 
 .startButton {
   background-color: #00ffff;
@@ -143,7 +141,6 @@ export default defineComponent({
   margin: calc(30px / 2);
 }
 
-
 /* タブレット　2カラム */
 @media screen and (max-width: 1024px) {
   .bl_media_itemWrapper {
@@ -158,6 +155,13 @@ export default defineComponent({
   }
 }
 
+.selectImg {
+  box-shadow: 4px 0 black,
+  -4px 0 black,
+  0 4px black,
+  0 -4px black;
+  width: 10% !important;
+}
 
 .cardImg {
   width: 100%;
@@ -177,6 +181,36 @@ h1 {
 
 label {
   display: block;
+}
+
+.select-row {
+  width: 50%;
+}
+
+.select-guide {
+  width: 50%;
+}
+
+@media screen and (max-width: 599px) {
+  .selectImg {
+    width: 35% !important;
+  }
+  .bl_media_container {
+    width: 90%;
+  }
+  .startArea {
+    width: 80% !important;
+  }
+  .select-row {
+    width: 95%;
+  }
+  .select-guide {
+    width: 95%;
+  }
+  h1 {
+    font-size: 1.3rem;
+    margin: 0.5em;
+  }
 }
 
 </style>

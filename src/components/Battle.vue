@@ -1,29 +1,35 @@
 <template>
   <div id="app">
     <div class="centeringParent">
-      <div class="floar">
-        <div style="display: flex;justify-content: space-between;">
-          <div class="life-frame">
-            <div class="player-life-bar"></div>
-            <div class="life-mark"></div>
+      <div class="floar-wrapper" :style="{
+        width: (1200 * scaleFactor) + 'px',
+        height: scaledFieldHeight + 'px',
+        margin: '0 auto'
+      }">
+        <div class="floar" :style="{ transform: `scale(${scaleFactor})` }">
+          <div style="display: flex;justify-content: space-between;">
+            <div class="life-frame">
+              <div class="player-life-bar" :style="{ width: playerLifePercent + '%' }"></div>
+              <div class="life-mark"></div>
+            </div>
+            <div class="life-frame">
+              <div class="enemy-life-bar" :style="{ width: enemyLifePercent + '%' }"></div>
+              <div class="life-mark"></div>
+            </div>
           </div>
-          <div class="life-frame">
-            <div class="enemy-life-bar"></div>
-            <div class="life-mark"></div>
-          </div>
-        </div>
-        <div class="battleField">
-          <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult" ref="gameResult"></GameResult>
-          <div class="player">
-            <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
-          </div>
-          <div class="enemy">
-            <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+          <div class="battleField">
+            <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult" ref="gameResult"></GameResult>
+            <div class="player">
+              <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
+            </div>
+            <div class="enemy">
+              <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="mt-5 fs-4 m-auto" style="width:45%">
+    <div class="mt-5 fs-4 m-auto instructions-section">
       <div class="m-auto w-100">
         <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
@@ -49,7 +55,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GameResult from "./GameResult.vue";
-import Thanks from "./Thanks.vue";
 import { getImageUrl } from '@/utils/imageLoader';
 import { usePlayerStore } from '@/stores/player'
 import { useEnemyStore } from '@/stores/enemy'
@@ -59,11 +64,11 @@ import type { PlayerName } from '@/stores/player'
 export default defineComponent({
   name: 'Battle',
   components: {
-    GameResult,
-    Thanks
+    GameResult
   },
   data() {
     return {
+      windowWidth: window.innerWidth,
       player: '',
       p_x: 0,
       p_y: 0,
@@ -71,28 +76,38 @@ export default defineComponent({
       e_y: 0,//敵キャラの位置（縦）
       playerImage: '',
       enemyImage: '',
-      keyCode: null as number | null,
+      pressedKey: '' as string,
       playerStatus: '',
-      wakeUpFlg: false as boolean | 'used',
+      wakeUpFlg: 'unused' as 'unused' | 'active' | 'used',
       enemyStatus: '',
       matchEndMessage: '',
       gameResult: false,
       maxEnemyLife: 0,
       maxPlayerLife: 0,
-      enterKey: 13 as number | null,
-      spaceKey: 32,
-      attackCount: 0
+      enterKeyEnabled: true,
+      attackCount: 0,
+      playerLifePercent: 100,
+      enemyLifePercent: 100,
+      timers: [] as ReturnType<typeof setTimeout>[],
+      gardTimerId: null as ReturnType<typeof setTimeout> | null
     }
   },
   computed: {
     enemyAbility() { return useEnemyStore().status },
     playerAbility() { return usePlayerStore().status },
+    scaleFactor(): number {
+      if (this.windowWidth >= 1240) return 1
+      return Math.min(1, (this.windowWidth - 40) / 1200)
+    },
+    scaledFieldHeight(): number {
+      return 500 * this.scaleFactor
+    },
   },
   mounted() {
     this.player = this.$route.params.selectPlayerImgName as string;
     this.playerImage = getImageUrl(`${this.player}_stand.gif`);
     this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
-    this.enemyAutoAction();
+    window.addEventListener('resize', this.onResize);
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
@@ -100,18 +115,21 @@ export default defineComponent({
     usePlayerStore().selectPlayer(this.$route.params.selectPlayerImgName as PlayerName);
     this.maxEnemyLife = this.enemyAbility.life;
     this.maxPlayerLife = this.playerAbility.life;
+    this.enemyAutoAction();
   },
   beforeUnmount() {
+    window.removeEventListener('resize', this.onResize)
     document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
-  },
-  beforeRouteUpdate() {
-    (this.$refs.gameResult as InstanceType<typeof GameResult>).reload();
+    this.timers.forEach(t => clearTimeout(t))
   },
   methods: {
+    onResize() {
+      this.windowWidth = window.innerWidth
+    },
     rightMove() {
       //移動制限
-      if (this.p_x == 1150) {
+      if (this.p_x === 1150) {
         return;
       }
       //敵との距離制限
@@ -130,40 +148,41 @@ export default defineComponent({
       this.p_x = this.p_x - this.playerAbility.motionRange;
     },
     attackMove() {
-      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus === 'damage' || this.playerStatus === 'dead') {
         return;
       }
       this.playerImage = getImageUrl(`${this.player}_attack.gif`);
       this.playerStatus = 'attack';
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 450
-      );
+      ));
 
 
       // 遠距離タイプだった場合の処理
-      if (this.playerAbility.attackType == 'longDistance') {
-        setTimeout(() => {
+      if (this.playerAbility.attackType === 'longDistance') {
+        this.timers.push(setTimeout(() => {
             this.enemyLifeDecrease(this.playerAbility.attack);
             // this.e_x = +550;
           }
           , 400
-        );
+        ));
+        return;
       }
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
         let damage: number = this.playerAbility.attack
-        if (this.wakeUpFlg == true) {
+        if (this.wakeUpFlg === 'active') {
           damage = this.playerAbility.w_attack ?? this.playerAbility.attack;
         }
         this.enemyLifeDecrease(damage);
       }
     },
     strongAttackMove() {
-      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus === 'damage' || this.playerStatus === 'dead') {
         return;
       }
       this.attackCount = 0;
@@ -171,68 +190,68 @@ export default defineComponent({
       this.playerStatus = 'attack';
 
       // 遠距離タイプだった場合の処理
-      if (this.playerAbility.attackType == 'longDistance') {
-        setTimeout(() => {
+      if (this.playerAbility.attackType === 'longDistance') {
+        this.timers.push(setTimeout(() => {
             this.playerImage = getImageUrl(`${this.player}_stand.gif`);
             this.playerStatus = '';
           }
           , 1500
-        );
+        ));
 
         let beforePlayerLife = this.playerAbility.life;
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             //敵から攻撃を受けたら攻撃を中止する
-            if (beforePlayerLife != this.playerAbility.life) {
-              if (this.wakeUpFlg != true) {
+            if (beforePlayerLife !== this.playerAbility.life) {
+              if (this.wakeUpFlg !== 'active') {
                 return
               }
             }
             this.enemyLifeDecrease(this.playerAbility.attack * 1.5);//強攻撃は弱攻撃の1.5倍に。
           }
           , 1500
-        );
+        ));
         return;
       }
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 700
-      );
+      ));
 
       //物体同士の衝突を検知したらダメージを減らす
       if (this.isConflict()) {
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             let damage: number = this.playerAbility.attack
-            if (this.wakeUpFlg == true) {
+            if (this.wakeUpFlg === 'active') {
               damage = this.playerAbility.w_attack ?? this.playerAbility.attack;
             }
             this.enemyLifeDecrease(damage * 1.5);
           }
           , 600
-        )
+        ))
       }
 
     },
     wakeUpMove() {
 
-      if (this.wakeUpFlg == false && this.player == 'eda') { //TODO：一旦枝まつのみ
-        this.wakeUpFlg = true;
+      if (this.wakeUpFlg === 'unused' && this.player === 'eda') { //TODO：一旦枝まつのみ
+        this.wakeUpFlg = 'active';
         this.playerImage = getImageUrl(`${this.player}_awake.gif`);
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             this.player = this.player + '_w';
             this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           }
           , 1000
-        );
-        setTimeout(() => {
+        ));
+        this.timers.push(setTimeout(() => {
 
             this.player = this.player.replace("_w", "");
             this.playerImage = getImageUrl(`${this.player}_stand.gif`);
             this.wakeUpFlg = 'used';
           }
           , 7000
-        );
+        ));
       }
     },
     damageMove() {
@@ -244,24 +263,37 @@ export default defineComponent({
         return;
       }
 
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
         }
         , 500
-      );
+      ));
 
     },
     gardMove() {
       this.playerImage = getImageUrl(`${this.player}_gard.gif`);
       this.attackCount = 0;
-      setTimeout(() => {
+
+      const onKeyUpHandler = () => {
+        if (this.gardTimerId !== null) {
+          clearTimeout(this.gardTimerId);
+          this.gardTimerId = null;
+        }
+        this.playerImage = getImageUrl(`${this.player}_stand.gif`);
+        this.playerStatus = '';
+      };
+
+      this.gardTimerId = setTimeout(() => {
           this.playerImage = getImageUrl(`${this.player}_stand.gif`);
           this.playerStatus = '';
+          document.removeEventListener('keyup', onKeyUpHandler);
+          this.gardTimerId = null;
         }
         , 4000
       );
-      document.addEventListener('keyup', this.resetStatus);
+      this.timers.push(this.gardTimerId);
+      document.addEventListener('keyup', onKeyUpHandler, { once: true });
       this.playerStatus = 'gard';
     },
     deadMove() {
@@ -270,55 +302,53 @@ export default defineComponent({
       this.showGameResult();
     },
     playerLifeDecrease() {
-      if (this.playerStatus == 'gard' || this.wakeUpFlg == true) {
+      if (this.playerStatus === 'gard' || this.wakeUpFlg === 'active') {
         this.playerImage = getImageUrl(`${this.player}_garding.gif`);
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             this.p_x = this.p_x - 150;
           }
           , 300
-        );
+        ));
         return;
       }
 
-      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus === 'damage' || this.playerStatus === 'dead') {
         return;
       }
       //体力ゲージ消費処理
-      this.playerAbility.life = this.playerAbility.life - this.enemyAbility.attack;
-      const lifeBar = document.getElementsByClassName('player-life-bar');
+      usePlayerStore().changeLife(this.enemyAbility.attack);
       let lessLife = this.playerAbility.life / this.maxPlayerLife * 100
       if (lessLife < 0) {
         // HACK:マイナスの値はなぜか反応しないため
         lessLife = 0;
       }
-      ;(lifeBar[0] as HTMLElement).style.width = lessLife + "%"
+      this.playerLifePercent = lessLife;
       this.damageMove();
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           if (this.p_x < -250) {
             return;
           }
           this.p_x = this.p_x - 200;
         }
         , 300
-      );
+      ));
     },
     enemyLifeDecrease(damage: number) {
-      if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
+      if (this.enemyStatus === 'damage' || this.enemyStatus === 'dead') {
         return;
       }
       //体力ゲージ消費処理
       useEnemyStore().changeLife(damage)
-      const lifeBar = document.getElementsByClassName('enemy-life-bar');
       let lessLife = Math.floor(this.enemyAbility.life / this.maxEnemyLife * 100)
       if (lessLife < 0) {
         // HACK:マイナスの値はなぜか反応しないため
         lessLife = 0;
       }
-      ;(lifeBar[0] as HTMLElement).style.width = lessLife + "%";
+      this.enemyLifePercent = lessLife;
 
       this.enemyDamageMove();
 
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           if (this.e_x > 1100) {
             this.e_x = 1000;
           } else {
@@ -326,47 +356,42 @@ export default defineComponent({
           }
         }
         , 300
-      );
+      ));
     },
     isConflict() {
       const enemyDom = this.$refs.enemy as HTMLElement;
-      const enemyRect = enemyDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+      const enemyRect = enemyDom.getBoundingClientRect();
       const playerDom = this.$refs.player as HTMLElement;
-      const playerRect = playerDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+      const playerRect = playerDom.getBoundingClientRect();
 
-      if ((enemyRect.right - playerRect.right) < 300) {
-        return true;
-      }
-      return false
+      const diff = enemyRect.right - playerRect.right;
+      return diff >= 0 && diff < (300 * this.scaleFactor);
     },
     enemyDeadMove() {
       this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_dead.gif`);
 
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
 
           this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_deading.gif`);
         }
         , 250
-      );
+      ));
       this.enemyStatus = 'dead';
       this.showGameResult();
     },
     enemyAutoAction() {
+      if (this.gameResult) {
+        return;
+      }
       this.enemyMove();
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.enemyAutoAction()
         }
         , this.enemyAbility.speed
-      );
+      ));
     },
     enemyMove() {
-      //敵との距離制限
-      if (this.e_x - this.p_x < 220) {
-        this.e_x = this.e_x + 50
-        return;
-      }
-
-      if (this.enemyStatus == 'damage' || this.enemyStatus == 'dead') {
+      if (this.enemyStatus === 'damage' || this.enemyStatus === 'dead') {
         return;
       }
       //死亡アクション
@@ -374,17 +399,23 @@ export default defineComponent({
         this.enemyDeadMove();
         return;
       }
+
+      //敵との距離制限
+      if (this.e_x - this.p_x < 220) {
+        this.e_x = this.e_x + 50
+        return;
+      }
       let x_num = this.getRandom(this.enemyAbility.motionRange);
       if (this.isConflict()) {
         //攻撃をランダムに実行
-        if ((this.e_x % 3) == 0 && this.e_x != 0) {
+        if ((this.e_x % 3) === 0 && this.e_x !== 0) {
           this.enemyAttackMove();
         }
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             this.e_x = this.e_x + x_num;
           }
           , 400
-        );
+        ));
         return;
       } else {
         this.e_x = this.e_x + x_num;
@@ -400,21 +431,18 @@ export default defineComponent({
 
     },
     getRandom(motionRange: number) {
-      let n = motionRange / 2
-      let num = 0;
-      for (let i = 0; i < 5; i++) {
-        num = Math.floor(Math.random() * (-motionRange + 1 - n)) + n;
-      }
+      const n = motionRange / 2
+      const num = Math.floor(Math.random() * (-motionRange + 1 - n)) + n;
       return num;
     },
     enemyAttackMove() {
       this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_attack.gif`);
 
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
         }
         , 880
-      );
+      ));
 
       //物体同士の正徳を検知したらダメージを減らす
       if (this.isConflict()) {
@@ -424,89 +452,89 @@ export default defineComponent({
     enemyDamageMove() {
       this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_damege.gif`);
       this.enemyStatus = 'damage';
-      setTimeout(() => {
+      this.timers.push(setTimeout(() => {
           this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
           this.enemyStatus = '';
         }
         , 800
-      );
+      ));
     },
     onKeyUp(event: KeyboardEvent) {
-      // console.log(this.playerStatus)
-      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus === 'dead') {
         this.playerImage = getImageUrl(`${this.player}_dead.gif`);
         return;
       }
+      if (this.playerStatus === 'damage') {
+        return;
+      }
 
-      this.keyCode = event.keyCode
-      switch (this.keyCode) {
-        case 13:
-        case 32:
-        case 38: // ↑
+      this.pressedKey = event.key
+      switch (this.pressedKey) {
+        case 'Enter':
+        case ' ':
+        case 'ArrowUp':
           event.preventDefault();
       }
 
-      if (this.keyCode === 32) {
+      if (this.pressedKey === ' ') {
         this.attackCount = this.attackCount + 1;
         if (this.attackCount > 7) {
           this.playerImage = getImageUrl(`${this.player}_dead.gif`);
           this.playerStatus = 'damage';
-          setTimeout(() => {
+          this.timers.push(setTimeout(() => {
               this.resetStatus()
               this.attackCount = 0;
-              // this.spaceKey = 32;
             }
             , 2000
-          );
+          ));
           return;
         }
         this.attackMove();
       }
 
-      if (this.keyCode == this.enterKey) {
-        this.enterKey = null;
+      if (this.pressedKey === 'Enter' && this.enterKeyEnabled) {
+        this.enterKeyEnabled = false;
         this.strongAttackMove();
-        setTimeout(() => {
-            this.enterKey = 13;
+        this.timers.push(setTimeout(() => {
+            this.enterKeyEnabled = true;
           }
           , 1300
-        );
+        ));
       }
     },
     onKeyDown(event: KeyboardEvent) {
-      if (this.playerStatus == 'damage' || this.playerStatus == 'dead') {
+      if (this.playerStatus === 'dead') {
         this.playerImage = getImageUrl(`${this.player}_dead.gif`);
         return;
       }
-      this.keyCode = event.keyCode
-      const ArrowRight = 39;
-      const ArrowLeft = 37;
-      const ArrowDown = 40;
-      const ArrowUp = 38;
+      if (this.playerStatus === 'damage') {
+        return;
+      }
+      this.pressedKey = event.key
 
-      switch (this.keyCode) {
-        case 13:
-        case 32:
-        case 37: // ←
-        case 38: // ↑
-        case 39: // →
-        case 40: // ↓
+      switch (this.pressedKey) {
+        case 'Enter':
+        case ' ':
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'ArrowRight':
+        case 'ArrowDown':
           event.preventDefault();
       }
 
-      if (this.keyCode == ArrowRight) {
+      if (this.pressedKey === 'ArrowRight') {
         this.rightMove();
       }
-      if (this.keyCode == ArrowLeft) {
+      if (this.pressedKey === 'ArrowLeft') {
         this.leftMove();
       }
 
-      if (this.keyCode == ArrowUp) {
+      if (this.pressedKey === 'ArrowUp') {
         this.wakeUpMove();
       }
 
       //ガードのみキーを下げたときに機能させたい
-      if (this.keyCode == ArrowDown && this.playerStatus != 'gard') {
+      if (this.pressedKey === 'ArrowDown' && this.playerStatus !== 'gard') {
         this.gardMove();
       }
     },
@@ -522,7 +550,7 @@ export default defineComponent({
       if (this.enemyAbility.life <= 0) {
         this.matchEndMessage = 'win'
 
-        if (Number(this.$route.params.enemyNum) == 3) {
+        if (Number(this.$route.params.enemyNum) === 3) {
           this.matchEndMessage = 'clear'
         }
       }
@@ -544,6 +572,8 @@ export default defineComponent({
 .player > .object, .enemy > .object {
   width: 300px;
   height: 200px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .enemy {
@@ -555,6 +585,7 @@ export default defineComponent({
 .centeringParent {
   padding: 20px; /* 余白指定 */
   background-color: #ddd; /* 背景色指定 */ /* 高さ指定 */
+  overflow: hidden;
 }
 
 .floar {
@@ -562,6 +593,7 @@ export default defineComponent({
   width: 1200px; /* 幅指定 */
   height: 500px; /* 高さ指定 */
   margin: 0 auto; /* 中央寄せ */
+  transform-origin: top left;
 }
 
 .battleField {
@@ -590,6 +622,16 @@ export default defineComponent({
   background-color: rgb(0, 255, 255);
   transition: 300ms;
   width: 100%;
+}
+
+.instructions-section {
+  width: 45%;
+}
+
+@media screen and (max-width: 599px) {
+  .instructions-section {
+    width: 95%;
+  }
 }
 
 </style>
