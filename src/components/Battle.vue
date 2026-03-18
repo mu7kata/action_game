@@ -1,29 +1,35 @@
 <template>
   <div id="app">
     <div class="centeringParent">
-      <div class="floar">
-        <div style="display: flex;justify-content: space-between;">
-          <div class="life-frame">
-            <div class="player-life-bar" :style="{ width: playerLifePercent + '%' }"></div>
-            <div class="life-mark"></div>
+      <div class="floar-wrapper" :style="{
+        width: (1200 * scaleFactor) + 'px',
+        height: scaledFieldHeight + 'px',
+        margin: '0 auto'
+      }">
+        <div class="floar" :style="{ transform: `scale(${scaleFactor})` }">
+          <div style="display: flex;justify-content: space-between;">
+            <div class="life-frame">
+              <div class="player-life-bar" :style="{ width: playerLifePercent + '%' }"></div>
+              <div class="life-mark"></div>
+            </div>
+            <div class="life-frame">
+              <div class="enemy-life-bar" :style="{ width: enemyLifePercent + '%' }"></div>
+              <div class="life-mark"></div>
+            </div>
           </div>
-          <div class="life-frame">
-            <div class="enemy-life-bar" :style="{ width: enemyLifePercent + '%' }"></div>
-            <div class="life-mark"></div>
-          </div>
-        </div>
-        <div class="battleField">
-          <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult" ref="gameResult"></GameResult>
-          <div class="player">
-            <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
-          </div>
-          <div class="enemy">
-            <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+          <div class="battleField">
+            <GameResult :matchEndMessage="matchEndMessage" v-show="gameResult" ref="gameResult"></GameResult>
+            <div class="player">
+              <img class="object" ref="player" :src="playerImage" :style="{ transform: `translate(${p_x}px, ${p_y}px)` }">
+            </div>
+            <div class="enemy">
+              <img class="object" ref="enemy" :src="enemyImage" :style="{ transform: `translate(${e_x}px, ${e_y}px)` }">
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="mt-5 fs-4 m-auto" style="width:45%">
+    <div class="mt-5 fs-4 m-auto instructions-section">
       <div class="m-auto w-100">
         <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
@@ -62,6 +68,7 @@ export default defineComponent({
   },
   data() {
     return {
+      windowWidth: window.innerWidth,
       player: '',
       p_x: 0,
       p_y: 0,
@@ -88,11 +95,19 @@ export default defineComponent({
   computed: {
     enemyAbility() { return useEnemyStore().status },
     playerAbility() { return usePlayerStore().status },
+    scaleFactor(): number {
+      if (this.windowWidth >= 1240) return 1
+      return Math.min(1, (this.windowWidth - 40) / 1200)
+    },
+    scaledFieldHeight(): number {
+      return 500 * this.scaleFactor
+    },
   },
   mounted() {
     this.player = this.$route.params.selectPlayerImgName as string;
     this.playerImage = getImageUrl(`${this.player}_stand.gif`);
     this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_stand.gif`);
+    window.addEventListener('resize', this.onResize);
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown);
     this.e_x = 850;
@@ -103,11 +118,15 @@ export default defineComponent({
     this.enemyAutoAction();
   },
   beforeUnmount() {
+    window.removeEventListener('resize', this.onResize)
     document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
     this.timers.forEach(t => clearTimeout(t))
   },
   methods: {
+    onResize() {
+      this.windowWidth = window.innerWidth
+    },
     rightMove() {
       //移動制限
       if (this.p_x === 1150) {
@@ -341,12 +360,12 @@ export default defineComponent({
     },
     isConflict() {
       const enemyDom = this.$refs.enemy as HTMLElement;
-      const enemyRect = enemyDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+      const enemyRect = enemyDom.getBoundingClientRect();
       const playerDom = this.$refs.player as HTMLElement;
-      const playerRect = playerDom.getBoundingClientRect(); // 要素の座標と幅と高さを取得
+      const playerRect = playerDom.getBoundingClientRect();
 
       const diff = enemyRect.right - playerRect.right;
-      return diff >= 0 && diff < 300;
+      return diff >= 0 && diff < (300 * this.scaleFactor);
     },
     enemyDeadMove() {
       this.enemyImage = getImageUrl(`enamy_${this.$route.params.enemyNum}_dead.gif`);
@@ -553,6 +572,8 @@ export default defineComponent({
 .player > .object, .enemy > .object {
   width: 300px;
   height: 200px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .enemy {
@@ -564,6 +585,7 @@ export default defineComponent({
 .centeringParent {
   padding: 20px; /* 余白指定 */
   background-color: #ddd; /* 背景色指定 */ /* 高さ指定 */
+  overflow: hidden;
 }
 
 .floar {
@@ -571,6 +593,7 @@ export default defineComponent({
   width: 1200px; /* 幅指定 */
   height: 500px; /* 高さ指定 */
   margin: 0 auto; /* 中央寄せ */
+  transform-origin: top left;
 }
 
 .battleField {
@@ -599,6 +622,16 @@ export default defineComponent({
   background-color: rgb(0, 255, 255);
   transition: 300ms;
   width: 100%;
+}
+
+.instructions-section {
+  width: 45%;
+}
+
+@media screen and (max-width: 599px) {
+  .instructions-section {
+    width: 95%;
+  }
 }
 
 </style>

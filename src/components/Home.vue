@@ -18,17 +18,17 @@
           </div>
         </div>
         <div class="mt-5">
-          <router-link class="button p-3 m-2 w-25" :to="`/select`"><span class="me-2">▶</span>　チャレンジモードではじめる
+          <router-link class="button p-3 m-2 home-button" :to="`/select`"><span class="me-2">▶</span>　チャレンジモードではじめる
           </router-link>
         </div>
         <div class="mt-5 ">
           <p>↓ 近日公開</p>
-          <a class="button border-light p-3 m-2 w-25 text-secondary bg-light"><span class="me-2">▶</span>フリーたいせんモードではじめる</a>
+          <a class="button border-light p-3 m-2 home-button text-secondary bg-light"><span class="me-2">▶</span>フリーたいせんモードではじめる</a>
         </div>
       </div>
       <div class="mt-5 m-auto w-75">
         <h3>更新情報</h3>
-        <div class="text-start w-25 m-auto mt-3">
+        <div class="text-start update-info m-auto mt-3">
           <p class="m-0">【2022.09.10】 "えだまつ"に覚醒モードが追加されました</p>
           <p class="m-0">【2022.09.05】 ベータ版リリースしました</p>
         </div>
@@ -55,4 +55,25 @@ export default defineComponent({
   top: 25%;
 }
 
+.home-button {
+  width: 25%;
+  display: inline-block;
+}
+
+.update-info {
+  width: 25%;
+}
+
+@media screen and (max-width: 599px) {
+  .gameTitle {
+    position: static;
+    padding-top: 1rem;
+  }
+  .home-button {
+    width: 85%;
+  }
+  .update-info {
+    width: 90%;
+  }
+}
 </style>
