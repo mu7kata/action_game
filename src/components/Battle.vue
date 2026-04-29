@@ -29,7 +29,18 @@
         </div>
       </div>
     </div>
-    <div class="mt-5 fs-4 m-auto instructions-section">
+    <TouchGamepad
+      v-if="isTouchDevice && !gameResult"
+      :visible="true"
+      @move-left="leftMove"
+      @move-right="rightMove"
+      @weak-attack="onTouchWeakAttack"
+      @strong-attack="onTouchStrongAttack"
+      @guard-start="gardStart"
+      @guard-end="gardEnd"
+      @wakeup="wakeUpMove"
+    />
+    <div v-if="!isTouchDevice" class="mt-5 fs-4 m-auto instructions-section">
       <div class="m-auto w-100">
         <h3 class="text-start">操作方法(コマンド)</h3>
         <ul class="text-start">
@@ -55,7 +66,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GameResult from "./GameResult.vue";
+import TouchGamepad from "./TouchGamepad.vue";
 import { getImageUrl } from '@/utils/imageLoader';
+import { isTouchDevice as checkTouchDevice } from '@/utils/touchDetection';
 import { usePlayerStore } from '@/stores/player'
 import { useEnemyStore } from '@/stores/enemy'
 import type { EnemyLevel } from '@/stores/enemy'
@@ -64,7 +77,8 @@ import type { PlayerName } from '@/stores/player'
 export default defineComponent({
   name: 'Battle',
   components: {
-    GameResult
+    GameResult,
+    TouchGamepad
   },
   data() {
     return {
@@ -89,7 +103,8 @@ export default defineComponent({
       playerLifePercent: 100,
       enemyLifePercent: 100,
       timers: [] as ReturnType<typeof setTimeout>[],
-      gardTimerId: null as ReturnType<typeof setTimeout> | null
+      gardTimerId: null as ReturnType<typeof setTimeout> | null,
+      isTouchDevice: false
     }
   },
   computed: {
@@ -110,6 +125,7 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize);
     document.addEventListener('keyup', this.onKeyUp);
     document.addEventListener('keydown', this.onKeyDown);
+    this.isTouchDevice = checkTouchDevice();
     this.e_x = 850;
     useEnemyStore().selectEnemy(Number(this.$route.params.enemyNum) as EnemyLevel);
     usePlayerStore().selectPlayer(this.$route.params.selectPlayerImgName as PlayerName);
@@ -271,30 +287,22 @@ export default defineComponent({
       ));
 
     },
-    gardMove() {
+    gardStart() {
+      if (this.playerStatus === 'gard') return;
       this.playerImage = getImageUrl(`${this.player}_gard.gif`);
       this.attackCount = 0;
-
-      const onKeyUpHandler = () => {
-        if (this.gardTimerId !== null) {
-          clearTimeout(this.gardTimerId);
-          this.gardTimerId = null;
-        }
-        this.playerImage = getImageUrl(`${this.player}_stand.gif`);
-        this.playerStatus = '';
-      };
-
-      this.gardTimerId = setTimeout(() => {
-          this.playerImage = getImageUrl(`${this.player}_stand.gif`);
-          this.playerStatus = '';
-          document.removeEventListener('keyup', onKeyUpHandler);
-          this.gardTimerId = null;
-        }
-        , 4000
-      );
-      this.timers.push(this.gardTimerId);
-      document.addEventListener('keyup', onKeyUpHandler, { once: true });
       this.playerStatus = 'gard';
+      this.gardTimerId = setTimeout(() => this.gardEnd(), 4000);
+      this.timers.push(this.gardTimerId);
+    },
+    gardEnd() {
+      if (this.playerStatus !== 'gard') return;
+      if (this.gardTimerId !== null) {
+        clearTimeout(this.gardTimerId);
+        this.gardTimerId = null;
+      }
+      this.playerImage = getImageUrl(`${this.player}_stand.gif`);
+      this.playerStatus = '';
     },
     deadMove() {
       this.playerImage = getImageUrl(`${this.player}_dead.gif`);
@@ -459,6 +467,29 @@ export default defineComponent({
         , 800
       ));
     },
+    onTouchWeakAttack() {
+      if (this.playerStatus === 'dead' || this.playerStatus === 'damage') return;
+      this.attackCount++;
+      if (this.attackCount > 7) {
+        this.playerImage = getImageUrl(`${this.player}_dead.gif`);
+        this.playerStatus = 'damage';
+        this.timers.push(setTimeout(() => {
+          this.resetStatus();
+          this.attackCount = 0;
+        }, 2000));
+        return;
+      }
+      this.attackMove();
+    },
+    onTouchStrongAttack() {
+      if (this.playerStatus === 'dead' || this.playerStatus === 'damage') return;
+      if (!this.enterKeyEnabled) return;
+      this.enterKeyEnabled = false;
+      this.strongAttackMove();
+      this.timers.push(setTimeout(() => {
+        this.enterKeyEnabled = true;
+      }, 1300));
+    },
     onKeyUp(event: KeyboardEvent) {
       if (this.playerStatus === 'dead') {
         this.playerImage = getImageUrl(`${this.player}_dead.gif`);
@@ -473,33 +504,20 @@ export default defineComponent({
         case 'Enter':
         case ' ':
         case 'ArrowUp':
+        case 'ArrowDown':
           event.preventDefault();
       }
 
       if (this.pressedKey === ' ') {
-        this.attackCount = this.attackCount + 1;
-        if (this.attackCount > 7) {
-          this.playerImage = getImageUrl(`${this.player}_dead.gif`);
-          this.playerStatus = 'damage';
-          this.timers.push(setTimeout(() => {
-              this.resetStatus()
-              this.attackCount = 0;
-            }
-            , 2000
-          ));
-          return;
-        }
-        this.attackMove();
+        this.onTouchWeakAttack();
       }
 
-      if (this.pressedKey === 'Enter' && this.enterKeyEnabled) {
-        this.enterKeyEnabled = false;
-        this.strongAttackMove();
-        this.timers.push(setTimeout(() => {
-            this.enterKeyEnabled = true;
-          }
-          , 1300
-        ));
+      if (this.pressedKey === 'Enter') {
+        this.onTouchStrongAttack();
+      }
+
+      if (this.pressedKey === 'ArrowDown') {
+        this.gardEnd();
       }
     },
     onKeyDown(event: KeyboardEvent) {
@@ -534,8 +552,8 @@ export default defineComponent({
       }
 
       //ガードのみキーを下げたときに機能させたい
-      if (this.pressedKey === 'ArrowDown' && this.playerStatus !== 'gard') {
-        this.gardMove();
+      if (this.pressedKey === 'ArrowDown') {
+        this.gardStart();
       }
     },
     resetStatus() {
@@ -631,6 +649,22 @@ export default defineComponent({
 @media screen and (max-width: 599px) {
   .instructions-section {
     width: 95%;
+  }
+}
+
+@media (pointer: coarse) {
+  .centeringParent {
+    padding: 5px;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape) {
+  .floar-wrapper {
+    margin-bottom: 0;
   }
 }
 

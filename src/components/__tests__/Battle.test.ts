@@ -222,6 +222,211 @@ describe('Battle.vue', () => {
     })
   })
 
+  describe('gardStart / gardEnd - ガード状態の管理', () => {
+    it('gardStart() がガード状態を有効にする', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = ''
+      vm.attackCount = 5
+
+      vm.gardStart()
+
+      expect(vm.playerStatus).toBe('gard')
+      expect(vm.playerImage).toBe('/mock/haru_gard.gif')
+      expect(vm.attackCount).toBe(0)
+      expect(vm.gardTimerId).not.toBeNull()
+
+      wrapper.unmount()
+    })
+
+    it('gardStart() は既にガード中なら何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'gard'
+      const imageBefore = vm.playerImage
+
+      vm.gardStart()
+
+      // 画像が変更されない（gardStart内のgard.gif設定に到達しない）
+      expect(vm.playerImage).toBe(imageBefore)
+
+      wrapper.unmount()
+    })
+
+    it('gardEnd() がガード状態を解除しタイマーをクリアする', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      // まずガード開始
+      vm.gardStart()
+      expect(vm.playerStatus).toBe('gard')
+      expect(vm.gardTimerId).not.toBeNull()
+
+      // ガード解除
+      vm.gardEnd()
+
+      expect(vm.playerStatus).toBe('')
+      expect(vm.playerImage).toBe('/mock/haru_stand.gif')
+      expect(vm.gardTimerId).toBeNull()
+
+      wrapper.unmount()
+    })
+
+    it('gardEnd() はガード状態でなければ何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'attack'
+      const imageBefore = vm.playerImage
+
+      vm.gardEnd()
+
+      expect(vm.playerStatus).toBe('attack')
+      expect(vm.playerImage).toBe(imageBefore)
+
+      wrapper.unmount()
+    })
+
+    it('gardStart() の4秒タイマーで自動的に gardEnd() が呼ばれる', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.gardStart()
+      expect(vm.playerStatus).toBe('gard')
+
+      vi.advanceTimersByTime(4000)
+
+      expect(vm.playerStatus).toBe('')
+      expect(vm.playerImage).toBe('/mock/haru_stand.gif')
+
+      wrapper.unmount()
+    })
+  })
+
+  describe('onTouchWeakAttack - 弱攻撃のタッチ操作', () => {
+    it('attackCount をインクリメントする', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.attackCount = 0
+      vi.spyOn(vm, 'attackMove').mockImplementation(() => {})
+
+      vm.onTouchWeakAttack()
+
+      expect(vm.attackCount).toBe(1)
+
+      wrapper.unmount()
+    })
+
+    it('8回目の攻撃でスタン（damage）状態になる', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.attackCount = 7
+      vi.spyOn(vm, 'attackMove').mockImplementation(() => {})
+
+      vm.onTouchWeakAttack()
+
+      expect(vm.attackCount).toBe(8)
+      expect(vm.playerStatus).toBe('damage')
+      expect(vm.playerImage).toBe('/mock/haru_dead.gif')
+
+      // 2秒後にリセットされる
+      vi.advanceTimersByTime(2000)
+      expect(vm.playerStatus).toBe('')
+      expect(vm.attackCount).toBe(0)
+
+      wrapper.unmount()
+    })
+
+    it('dead 状態では何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'dead'
+      vm.attackCount = 0
+      const attackMoveSpy = vi.spyOn(vm, 'attackMove').mockImplementation(() => {})
+
+      vm.onTouchWeakAttack()
+
+      expect(vm.attackCount).toBe(0)
+      expect(attackMoveSpy).not.toHaveBeenCalled()
+
+      wrapper.unmount()
+    })
+
+    it('damage 状態では何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'damage'
+      vm.attackCount = 0
+      const attackMoveSpy = vi.spyOn(vm, 'attackMove').mockImplementation(() => {})
+
+      vm.onTouchWeakAttack()
+
+      expect(vm.attackCount).toBe(0)
+      expect(attackMoveSpy).not.toHaveBeenCalled()
+
+      wrapper.unmount()
+    })
+  })
+
+  describe('onTouchStrongAttack - 強攻撃のタッチ操作', () => {
+    it('enterKeyEnabled クールダウンを尊重する', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vi.spyOn(vm, 'strongAttackMove').mockImplementation(() => {})
+      vm.enterKeyEnabled = true
+
+      vm.onTouchStrongAttack()
+
+      expect(vm.enterKeyEnabled).toBe(false)
+      expect(vm.strongAttackMove).toHaveBeenCalledTimes(1)
+
+      // クールダウン中は攻撃できない
+      vm.onTouchStrongAttack()
+      expect(vm.strongAttackMove).toHaveBeenCalledTimes(1)
+
+      // 1300ms後にクールダウン解除
+      vi.advanceTimersByTime(1300)
+      expect(vm.enterKeyEnabled).toBe(true)
+
+      wrapper.unmount()
+    })
+
+    it('dead 状態では何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'dead'
+      const strongAttackSpy = vi.spyOn(vm, 'strongAttackMove').mockImplementation(() => {})
+
+      vm.onTouchStrongAttack()
+
+      expect(strongAttackSpy).not.toHaveBeenCalled()
+
+      wrapper.unmount()
+    })
+
+    it('damage 状態では何もしない', async () => {
+      const wrapper = await mountBattle('haru', '1')
+      const vm = wrapper.vm as any
+
+      vm.playerStatus = 'damage'
+      const strongAttackSpy = vi.spyOn(vm, 'strongAttackMove').mockImplementation(() => {})
+
+      vm.onTouchStrongAttack()
+
+      expect(strongAttackSpy).not.toHaveBeenCalled()
+
+      wrapper.unmount()
+    })
+  })
+
   describe('Bug 6: enemyAutoAction() - gameResult が true で停止', () => {
     it('gameResult が true のとき enemyMove() を呼ばない', async () => {
       const wrapper = await mountBattle('haru', '1')
