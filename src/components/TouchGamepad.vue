@@ -129,7 +129,9 @@ export default defineComponent({
   left: 0;
   right: 0;
   z-index: 1000;
-  height: 130px;
+  height: calc(130px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.4);
   font-family: 'dotFont', sans-serif;
 }

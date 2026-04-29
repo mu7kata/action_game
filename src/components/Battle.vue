@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="battleScreen">
     <div class="centeringParent">
       <div class="floar-wrapper" :style="{
         width: (1200 * scaleFactor) + 'px',
@@ -55,7 +55,7 @@
         </ul>
       </div>
     </div>
-    <div>
+    <div class="home-button-area">
       <a class="button p-2" href="/">
         ホームへ戻る <span>⌂</span>
       </a>
@@ -652,19 +652,38 @@ export default defineComponent({
   }
 }
 
+/* タッチデバイス（縦持ち前提）: バトルフィールドは画面中央、ホームボタンはゲームパッド直上 */
 @media (pointer: coarse) {
+  .battleScreen {
+    min-height: calc(100dvh - 20px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+  }
   .centeringParent {
-    padding: 5px;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    padding: 0;
     touch-action: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
   }
-}
-
-@media (pointer: coarse) and (orientation: landscape) {
   .floar-wrapper {
-    margin-bottom: 0;
+    background-color: #ddd;
+    padding: 5px;
+    box-sizing: content-box;
+  }
+  .home-button-area {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 8px);
+    left: calc(env(safe-area-inset-left) + 8px);
+    z-index: 10;
+    margin: 0;
   }
 }
 
